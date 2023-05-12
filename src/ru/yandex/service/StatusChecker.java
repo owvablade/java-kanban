@@ -1,7 +1,7 @@
-package ru.yandex.kanban.service;
+package ru.yandex.service;
 
-import ru.yandex.kanban.model.*;
-import ru.yandex.kanban.storage.EpicStorage;
+import ru.yandex.model.*;
+import ru.yandex.storage.EpicStorage;
 
 import java.util.ArrayList;
 

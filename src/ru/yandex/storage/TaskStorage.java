@@ -1,6 +1,6 @@
-package ru.yandex.kanban.storage;
+package ru.yandex.storage;
 
-import ru.yandex.kanban.model.Task;
+import ru.yandex.model.Task;
 
 import java.util.ArrayList;
 import java.util.HashMap;

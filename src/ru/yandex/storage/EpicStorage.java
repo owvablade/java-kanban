@@ -1,6 +1,6 @@
-package ru.yandex.kanban.storage;
+package ru.yandex.storage;
 
-import ru.yandex.kanban.model.Epic;
+import ru.yandex.model.Epic;
 
 import java.util.ArrayList;
 import java.util.HashMap;

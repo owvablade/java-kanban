@@ -1,5 +1,5 @@
-import ru.yandex.kanban.model.*;
-import ru.yandex.kanban.service.Manager;
+import ru.yandex.model.*;
+import ru.yandex.service.Manager;
 
 import java.util.ArrayList;
 import java.util.Random;

@@ -1,9 +1,9 @@
-package ru.yandex.kanban.service;
+package ru.yandex.service;
 
-import ru.yandex.kanban.model.*;
-import ru.yandex.kanban.storage.EpicStorage;
-import ru.yandex.kanban.storage.SubtaskStorage;
-import ru.yandex.kanban.storage.TaskStorage;
+import ru.yandex.model.*;
+import ru.yandex.storage.EpicStorage;
+import ru.yandex.storage.SubtaskStorage;
+import ru.yandex.storage.TaskStorage;
 
 import java.util.ArrayList;
 
