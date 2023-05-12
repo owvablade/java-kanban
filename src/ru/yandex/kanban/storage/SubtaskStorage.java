@@ -21,8 +21,8 @@ public class SubtaskStorage {
         return subtasks.get(id);
     }
 
-    public void update(Subtask task) {
-        subtasks.replace(task.getId(), task);
+    public void update(Subtask subtask) {
+        subtasks.replace(subtask.getId(), subtask);
     }
 
     public void delete(int id) {

@@ -13,16 +13,16 @@ public class EpicStorage {
         epics = new HashMap<>();
     }
 
-    public void add(Epic Epic) {
-        epics.put(Epic.getId(), Epic);
+    public void add(Epic epic) {
+        epics.put(epic.getId(), epic);
     }
 
     public Epic get(int id) {
         return epics.get(id);
     }
 
-    public void update(Epic Epic) {
-        epics.replace(Epic.getId(), Epic);
+    public void update(Epic epic) {
+        epics.replace(epic.getId(), epic);
     }
 
     public void delete(int id) {
