@@ -5,9 +5,9 @@ import java.util.Objects;
 public class Task {
 
     protected int id;
-    private String name;
-    private String status;
-    private String description;
+    protected String name;
+    protected String status;
+    protected String description;
 
     public int getId() {
         return id;
