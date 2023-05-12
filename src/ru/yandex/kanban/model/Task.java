@@ -9,9 +9,6 @@ public class Task {
     private String status;
     private String description;
 
-    public Task() {
-    }
-
     public int getId() {
         return id;
     }

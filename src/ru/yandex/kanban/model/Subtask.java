@@ -6,9 +6,6 @@ public class Subtask extends Task {
 
     private int epicId;
 
-    public Subtask() {
-    }
-
     public int getEpicId() {
         return epicId;
     }
