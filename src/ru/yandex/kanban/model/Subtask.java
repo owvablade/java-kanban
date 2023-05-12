@@ -33,7 +33,7 @@ public class Subtask extends Task {
     public String toString() {
         return "Subtask{" +
                 "epicId=" + epicId +
-                ", id=" + super.getId() +
+                ", id=" + super.id +
                 ", name='" + super.getName() + '\'' +
                 ", status='" + super.getStatus() + '\'' +
                 ", description='" + super.getDescription() + '\'' +

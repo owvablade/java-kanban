@@ -4,7 +4,7 @@ import java.util.Objects;
 
 public class Task {
 
-    private int id;
+    protected int id;
     private String name;
     private String status;
     private String description;
