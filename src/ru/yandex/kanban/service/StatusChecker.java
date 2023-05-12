@@ -5,11 +5,11 @@ import ru.yandex.kanban.storage.EpicStorage;
 
 import java.util.ArrayList;
 
-public class KanbanStatusChecker {
+public class StatusChecker {
 
     private final EpicStorage epicStorage;
 
-    public KanbanStatusChecker(EpicStorage epicStorage) {
+    public StatusChecker(EpicStorage epicStorage) {
         this.epicStorage = epicStorage;
     }
 

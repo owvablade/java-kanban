@@ -13,7 +13,7 @@ public class KanbanManager {
     private final TaskStorage taskStorage;
     private final EpicStorage epicStorage;
     private final SubtaskStorage subtaskStorage;
-    private final KanbanStatusChecker statusChecker;
+    private final StatusChecker statusChecker;
 
     static {
         id = 1;
@@ -23,7 +23,7 @@ public class KanbanManager {
         taskStorage = new TaskStorage();
         epicStorage = new EpicStorage();
         subtaskStorage = new SubtaskStorage();
-        statusChecker = new KanbanStatusChecker(epicStorage);
+        statusChecker = new StatusChecker(epicStorage);
     }
 
     public int addTask(Task task) {
