@@ -7,44 +7,40 @@ import ru.yandex.kanban.storage.TaskStorage;
 
 import java.util.ArrayList;
 
-public class KanbanManager {
+public class Manager {
 
-    private static int id;
+    private static int id = 1;
     private final TaskStorage taskStorage;
     private final EpicStorage epicStorage;
     private final SubtaskStorage subtaskStorage;
     private final StatusChecker statusChecker;
 
-    static {
-        id = 1;
-    }
-
-    public KanbanManager() {
+    public Manager() {
         taskStorage = new TaskStorage();
         epicStorage = new EpicStorage();
         subtaskStorage = new SubtaskStorage();
         statusChecker = new StatusChecker(epicStorage);
     }
 
-    public int addTask(Task task) {
+    public void addTask(Task task) {
         task.setId(id);
         taskStorage.add(task);
-        return id++;
+        id++;
     }
 
-    public int addEpic(Epic epic) {
+    public void addEpic(Epic epic) {
         epic.setId(id);
         epicStorage.add(epic);
         statusChecker.checkEpicStatus(id);
-        return id++;
+        id++;
     }
 
-    public int addSubtask(Subtask subtask) {
+    public void addSubtask(Subtask subtask) {
         subtask.setId(id);
         subtaskStorage.add(subtask);
         epicStorage.get(subtask.getEpicId()).addSubtask(subtask);
         statusChecker.checkEpicStatus(subtask.getEpicId());
-        return id++;
+        id++;
     }
 
     public Task getTask(int id) {

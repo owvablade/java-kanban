@@ -1,5 +1,5 @@
 import ru.yandex.kanban.model.*;
-import ru.yandex.kanban.service.KanbanManager;
+import ru.yandex.kanban.service.Manager;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -7,7 +7,7 @@ import java.util.Random;
 public class Main {
 
     private static final Random random = new Random();
-    private static final KanbanManager manager = new KanbanManager();
+    private static final Manager manager = new Manager();
 
     public static void main(String[] args) {
         Task task1 = new Task()
