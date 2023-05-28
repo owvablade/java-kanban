@@ -1,33 +1,41 @@
 package ru.yandex.service;
 
 import ru.yandex.model.*;
+import ru.yandex.service.model.HistoryManager;
+import ru.yandex.service.model.TaskManager;
 import ru.yandex.storage.EpicStorage;
 import ru.yandex.storage.SubtaskStorage;
 import ru.yandex.storage.TaskStorage;
+import ru.yandex.util.Managers;
 
 import java.util.ArrayList;
+import java.util.List;
 
-public class Manager {
+public class InMemoryTaskManager implements TaskManager {
 
     private static int id = 1;
+    private final HistoryManager history;
     private final TaskStorage taskStorage;
     private final EpicStorage epicStorage;
     private final SubtaskStorage subtaskStorage;
     private final StatusChecker statusChecker;
 
-    public Manager() {
+    public InMemoryTaskManager() {
         taskStorage = new TaskStorage();
         epicStorage = new EpicStorage();
         subtaskStorage = new SubtaskStorage();
+        history = Managers.getDefaultHistory();
         statusChecker = new StatusChecker(epicStorage);
     }
 
+    @Override
     public void addTask(Task task) {
         task.setId(id);
         taskStorage.add(task);
         id++;
     }
 
+    @Override
     public void addEpic(Epic epic) {
         epic.setId(id);
         epicStorage.add(epic);
@@ -35,6 +43,7 @@ public class Manager {
         id++;
     }
 
+    @Override
     public void addSubtask(Subtask subtask) {
         subtask.setId(id);
         subtaskStorage.add(subtask);
@@ -43,22 +52,30 @@ public class Manager {
         id++;
     }
 
+    @Override
     public Task getTask(int id) {
+        history.add(taskStorage.get(id));
         return taskStorage.get(id);
     }
 
+    @Override
     public Epic getEpic(int id) {
+        history.add(epicStorage.get(id));
         return epicStorage.get(id);
     }
 
+    @Override
     public Subtask getSubtask(int id) {
+        history.add(subtaskStorage.get(id));
         return subtaskStorage.get(id);
     }
 
+    @Override
     public void updateTask(Task task) {
         taskStorage.update(task);
     }
 
+    @Override
     public void updateEpic(Epic epic) {
         for (Subtask subtask : epic.getSubtasks()) {
             updateSubtask(subtask);
@@ -67,24 +84,28 @@ public class Manager {
         statusChecker.checkEpicStatus(epic.getId());
     }
 
+    @Override
     public void updateSubtask(Subtask subtask) {
         epicStorage.get(subtask.getEpicId()).changeSubtask(subtask);
         subtaskStorage.update(subtask);
         statusChecker.checkEpicStatus(subtask.getEpicId());
     }
 
+    @Override
     public void deleteTask(int id) {
         taskStorage.delete(id);
     }
 
+    @Override
     public void deleteEpic(int id) {
-        ArrayList<Subtask> subtasks = getEpic(id).getSubtasks();
+        ArrayList<Subtask> subtasks = epicStorage.get(id).getSubtasks();
         for (Subtask subtask : subtasks) {
             subtaskStorage.delete(subtask.getId());
         }
         epicStorage.delete(id);
     }
 
+    @Override
     public void deleteSubtask(int id) {
         Subtask subtask = subtaskStorage.get(id);
         epicStorage.get(subtask.getEpicId()).deleteSubtask(subtask);
@@ -92,32 +113,44 @@ public class Manager {
         statusChecker.checkEpicStatus(subtask.getEpicId());
     }
 
+    @Override
     public ArrayList<Task> getAllTasks() {
         return taskStorage.getAll();
     }
 
+    @Override
     public ArrayList<Epic> getAllEpics() {
         return epicStorage.getAll();
     }
 
+    @Override
     public ArrayList<Subtask> getAllSubtasks() {
         return subtaskStorage.getAll();
     }
 
+    @Override
     public ArrayList<Subtask> getAllEpicSubtasks(int id) {
         return epicStorage.get(id).getSubtasks();
     }
 
+    @Override
     public void deleteAllTasks() {
         taskStorage.deleteAll();
     }
 
+    @Override
     public void deleteAllEpics() {
         deleteAllSubtasks();
         epicStorage.deleteAll();
     }
 
+    @Override
     public void deleteAllSubtasks() {
         subtaskStorage.deleteAll();
+    }
+
+    @Override
+    public List<Task> getHistory() {
+        return history.getHistory();
     }
 }

@@ -6,7 +6,7 @@ public class Task {
 
     protected int id;
     protected String name;
-    protected String status;
+    protected Status status;
     protected String description;
 
     public int getId() {
@@ -27,11 +27,11 @@ public class Task {
         return this;
     }
 
-    public String getStatus() {
+    public Status getStatus() {
         return status;
     }
 
-    public Task setStatus(String status) {
+    public Task setStatus(Status status) {
         this.status = status;
         return this;
     }
@@ -43,18 +43,6 @@ public class Task {
     public Task setDescription(String description) {
         this.description = description;
         return this;
-    }
-
-    public static String getNewStatus() {
-        return "NEW";
-    }
-
-    public static String getInProgressStatus() {
-        return "IN_PROGRESS";
-    }
-
-    public static String getDoneStatus() {
-        return "DONE";
     }
 
     @Override

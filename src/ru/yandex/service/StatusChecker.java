@@ -17,27 +17,27 @@ public class StatusChecker {
         Epic epic = epicStorage.get(id);
         ArrayList<Subtask> epicSubtasks = epic.getSubtasks();
         if (epicSubtasks.isEmpty()) {
-            epic.setStatus(Task.getNewStatus());
+            epic.setStatus(Status.NEW);
             return;
         }
         boolean isNew = true;
         boolean isDone = true;
         for (Subtask subtask : epicSubtasks) {
-            if (subtask.getStatus().equals(Task.getInProgressStatus())) {
-                epic.setStatus(Task.getInProgressStatus());
+            if (subtask.getStatus() == Status.IN_PROGRESS) {
+                epic.setStatus(Status.IN_PROGRESS);
                 return;
             }
-            if (subtask.getStatus().equals(Task.getNewStatus())) {
+            if (subtask.getStatus() == Status.NEW) {
                 isDone = false;
             }
-            if (subtask.getStatus().equals(Task.getDoneStatus())) {
+            if (subtask.getStatus() == Status.DONE) {
                 isNew = false;
             }
         }
         if (isNew) {
-            epic.setStatus(Task.getNewStatus());
+            epic.setStatus(Status.NEW);
         } else if (isDone) {
-            epic.setStatus(Task.getDoneStatus());
+            epic.setStatus(Status.DONE);
         }
     }
 }
