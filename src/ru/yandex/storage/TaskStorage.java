@@ -4,10 +4,12 @@ import ru.yandex.model.Task;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class TaskStorage {
 
-    private final HashMap<Integer, Task> tasks;
+    private final Map<Integer, Task> tasks;
 
     public TaskStorage() {
         tasks = new HashMap<>();
@@ -29,7 +31,7 @@ public class TaskStorage {
         tasks.remove(id);
     }
 
-    public ArrayList<Task> getAll() {
+    public List<Task> getAll() {
         return new ArrayList<>(tasks.values());
     }
 

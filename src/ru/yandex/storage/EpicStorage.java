@@ -4,10 +4,12 @@ import ru.yandex.model.Epic;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class EpicStorage {
 
-    private final HashMap<Integer, Epic> epics;
+    private final Map<Integer, Epic> epics;
 
     public EpicStorage() {
         epics = new HashMap<>();
@@ -29,7 +31,7 @@ public class EpicStorage {
         epics.remove(id);
     }
 
-    public ArrayList<Epic> getAll() {
+    public List<Epic> getAll() {
         return new ArrayList<>(epics.values());
     }
 

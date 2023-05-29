@@ -4,10 +4,12 @@ import ru.yandex.model.Subtask;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class SubtaskStorage {
 
-    private final HashMap<Integer, Subtask> subtasks;
+    private final Map<Integer, Subtask> subtasks;
 
     public SubtaskStorage() {
         subtasks = new HashMap<>();
@@ -29,7 +31,7 @@ public class SubtaskStorage {
         subtasks.remove(id);
     }
 
-    public ArrayList<Subtask> getAll() {
+    public List<Subtask> getAll() {
         return new ArrayList<>(subtasks.values());
     }
 
