@@ -1,15 +1,15 @@
 package ru.yandex.service;
 
 import ru.yandex.model.*;
-import ru.yandex.storage.EpicStorage;
+import ru.yandex.storage.interfaces.TaskStorage;
 
 import java.util.List;
 
 public class StatusChecker {
 
-    private final EpicStorage epicStorage;
+    private final TaskStorage<Epic> epicStorage;
 
-    public StatusChecker(EpicStorage epicStorage) {
+    public StatusChecker(TaskStorage<Epic> epicStorage) {
         this.epicStorage = epicStorage;
     }
 

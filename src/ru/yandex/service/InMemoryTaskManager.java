@@ -3,9 +3,8 @@ package ru.yandex.service;
 import ru.yandex.model.*;
 import ru.yandex.service.interfaces.HistoryManager;
 import ru.yandex.service.interfaces.TaskManager;
-import ru.yandex.storage.EpicStorage;
-import ru.yandex.storage.SubtaskStorage;
-import ru.yandex.storage.TaskStorage;
+import ru.yandex.storage.InMemoryTaskStorage;
+import ru.yandex.storage.interfaces.TaskStorage;
 import ru.yandex.util.Managers;
 
 import java.util.List;
@@ -14,16 +13,16 @@ public class InMemoryTaskManager implements TaskManager {
 
     private int id;
     private final HistoryManager history;
-    private final TaskStorage taskStorage;
-    private final EpicStorage epicStorage;
-    private final SubtaskStorage subtaskStorage;
+    private final TaskStorage<Task> taskStorage;
+    private final TaskStorage<Epic> epicStorage;
+    private final TaskStorage<Subtask> subtaskStorage;
     private final StatusChecker statusChecker;
 
     public InMemoryTaskManager() {
-        taskStorage = new TaskStorage();
-        epicStorage = new EpicStorage();
-        subtaskStorage = new SubtaskStorage();
         history = Managers.getDefaultHistory();
+        taskStorage = new InMemoryTaskStorage<>();
+        epicStorage = new InMemoryTaskStorage<>();
+        subtaskStorage = new InMemoryTaskStorage<>();
         statusChecker = new StatusChecker(epicStorage);
     }
 
