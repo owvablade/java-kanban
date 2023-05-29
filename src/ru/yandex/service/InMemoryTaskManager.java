@@ -1,8 +1,8 @@
 package ru.yandex.service;
 
 import ru.yandex.model.*;
-import ru.yandex.service.model.HistoryManager;
-import ru.yandex.service.model.TaskManager;
+import ru.yandex.service.interfaces.HistoryManager;
+import ru.yandex.service.interfaces.TaskManager;
 import ru.yandex.storage.EpicStorage;
 import ru.yandex.storage.SubtaskStorage;
 import ru.yandex.storage.TaskStorage;

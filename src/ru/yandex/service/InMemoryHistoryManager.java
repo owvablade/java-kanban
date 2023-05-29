@@ -1,7 +1,7 @@
 package ru.yandex.service;
 
 import ru.yandex.model.Task;
-import ru.yandex.service.model.HistoryManager;
+import ru.yandex.service.interfaces.HistoryManager;
 
 import java.util.LinkedList;
 import java.util.List;

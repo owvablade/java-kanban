@@ -1,4 +1,4 @@
-package ru.yandex.service.model;
+package ru.yandex.service.interfaces;
 
 import ru.yandex.model.Epic;
 import ru.yandex.model.Subtask;

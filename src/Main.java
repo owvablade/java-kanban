@@ -1,5 +1,5 @@
 import ru.yandex.model.*;
-import ru.yandex.service.model.TaskManager;
+import ru.yandex.service.interfaces.TaskManager;
 import ru.yandex.util.Managers;
 
 import java.util.*;
