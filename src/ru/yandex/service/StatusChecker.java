@@ -3,7 +3,7 @@ package ru.yandex.service;
 import ru.yandex.model.*;
 import ru.yandex.storage.EpicStorage;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public class StatusChecker {
 
@@ -15,7 +15,7 @@ public class StatusChecker {
 
     public void checkEpicStatus(int id) {
         Epic epic = epicStorage.get(id);
-        ArrayList<Subtask> epicSubtasks = epic.getSubtasks();
+        List<Subtask> epicSubtasks = epic.getSubtasks();
         if (epicSubtasks.isEmpty()) {
             epic.setStatus(Status.NEW);
             return;

@@ -8,7 +8,6 @@ import ru.yandex.storage.SubtaskStorage;
 import ru.yandex.storage.TaskStorage;
 import ru.yandex.util.Managers;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class InMemoryTaskManager implements TaskManager {
@@ -98,7 +97,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void deleteEpic(int id) {
-        ArrayList<Subtask> subtasks = epicStorage.get(id).getSubtasks();
+        List<Subtask> subtasks = epicStorage.get(id).getSubtasks();
         for (Subtask subtask : subtasks) {
             subtaskStorage.delete(subtask.getId());
         }
@@ -114,22 +113,22 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public ArrayList<Task> getAllTasks() {
+    public List<Task> getAllTasks() {
         return taskStorage.getAll();
     }
 
     @Override
-    public ArrayList<Epic> getAllEpics() {
+    public List<Epic> getAllEpics() {
         return epicStorage.getAll();
     }
 
     @Override
-    public ArrayList<Subtask> getAllSubtasks() {
+    public List<Subtask> getAllSubtasks() {
         return subtaskStorage.getAll();
     }
 
     @Override
-    public ArrayList<Subtask> getAllEpicSubtasks(int id) {
+    public List<Subtask> getAllEpicSubtasks(int id) {
         return epicStorage.get(id).getSubtasks();
     }
 

@@ -4,7 +4,6 @@ import ru.yandex.model.Epic;
 import ru.yandex.model.Subtask;
 import ru.yandex.model.Task;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public interface TaskManager {
@@ -33,13 +32,13 @@ public interface TaskManager {
 
     void deleteSubtask(int id);
 
-    ArrayList<Task> getAllTasks();
+    List<Task> getAllTasks();
 
-    ArrayList<Epic> getAllEpics();
+    List<Epic> getAllEpics();
 
-    ArrayList<Subtask> getAllSubtasks();
+    List<Subtask> getAllSubtasks();
 
-    ArrayList<Subtask> getAllEpicSubtasks(int id);
+    List<Subtask> getAllEpicSubtasks(int id);
 
     void deleteAllTasks();
 

@@ -105,7 +105,7 @@ public class Main {
 
         System.out.println("Epics: ");
         for (Epic epic : manager.getAllEpics()) {
-            ArrayList<Subtask> subtasks = manager.getAllEpicSubtasks(epic.getId());
+            List<Subtask> subtasks = manager.getAllEpicSubtasks(epic.getId());
             System.out.println(epic);
             System.out.println("Epic subtasks:");
             for (Subtask subtask : subtasks) {

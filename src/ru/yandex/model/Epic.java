@@ -2,17 +2,18 @@ package ru.yandex.model;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 
 public class Epic extends Task {
 
-    private ArrayList<Subtask> subtasks;
+    private List<Subtask> subtasks;
 
     public Epic() {
         subtasks = new ArrayList<>();
     }
 
-    public ArrayList<Subtask> getSubtasks() {
+    public List<Subtask> getSubtasks() {
         return subtasks;
     }
 
