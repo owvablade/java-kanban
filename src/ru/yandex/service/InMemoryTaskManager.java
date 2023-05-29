@@ -12,7 +12,7 @@ import java.util.List;
 
 public class InMemoryTaskManager implements TaskManager {
 
-    private static int id = 1;
+    private int id;
     private final HistoryManager history;
     private final TaskStorage taskStorage;
     private final EpicStorage epicStorage;
