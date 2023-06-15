@@ -13,10 +13,10 @@ public class InMemoryTaskManager implements TaskManager {
 
     private int id;
     private final HistoryManager history;
+    private final StatusChecker statusChecker;
     private final TaskStorage<Task> taskStorage;
     private final TaskStorage<Epic> epicStorage;
     private final TaskStorage<Subtask> subtaskStorage;
-    private final StatusChecker statusChecker;
 
     public InMemoryTaskManager() {
         history = Managers.getDefaultHistory();
