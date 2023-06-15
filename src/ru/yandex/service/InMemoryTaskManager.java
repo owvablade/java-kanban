@@ -28,6 +28,9 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void addTask(Task task) {
+        if (task == null) {
+            return;
+        }
         task.setId(id);
         taskStorage.add(task);
         id++;
@@ -35,6 +38,9 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void addEpic(Epic epic) {
+        if (epic == null) {
+            return;
+        }
         epic.setId(id);
         epicStorage.add(epic);
         statusChecker.checkEpicStatus(id);
@@ -43,6 +49,9 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void addSubtask(Subtask subtask) {
+        if (subtask == null) {
+            return;
+        }
         subtask.setId(id);
         subtaskStorage.add(subtask);
         epicStorage.get(subtask.getEpicId()).addSubtask(subtask);
@@ -70,11 +79,17 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void updateTask(Task task) {
+        if (task == null) {
+            return;
+        }
         taskStorage.update(task);
     }
 
     @Override
     public void updateEpic(Epic epic) {
+        if (epic == null) {
+            return;
+        }
         for (Subtask subtask : epic.getSubtasks()) {
             updateSubtask(subtask);
         }
@@ -84,6 +99,9 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void updateSubtask(Subtask subtask) {
+        if (subtask == null) {
+            return;
+        }
         epicStorage.get(subtask.getEpicId()).changeSubtask(subtask);
         subtaskStorage.update(subtask);
         statusChecker.checkEpicStatus(subtask.getEpicId());
