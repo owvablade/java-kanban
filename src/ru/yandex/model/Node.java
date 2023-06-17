@@ -1,36 +1,36 @@
 package ru.yandex.model;
 
-public class Node<T extends Task> {
+public class Node {
 
-    private T item;
-    private Node<T> prev;
-    private Node<T> next;
+    private Task item;
+    private Node prev;
+    private Node next;
 
-    public Node(T item) {
+    public Node(Task item) {
         this.item = item;
     }
 
-    public T getItem() {
+    public Task getItem() {
         return item;
     }
 
-    public void setItem(T item) {
+    public void setItem(Task item) {
         this.item = item;
     }
 
-    public Node<T> getPrev() {
+    public Node getPrev() {
         return prev;
     }
 
-    public void setPrev(Node<T> prev) {
+    public void setPrev(Node prev) {
         this.prev = prev;
     }
 
-    public Node<T> getNext() {
+    public Node getNext() {
         return next;
     }
 
-    public void setNext(Node<T> next) {
+    public void setNext(Node next) {
         this.next = next;
     }
 }

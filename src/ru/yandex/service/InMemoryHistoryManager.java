@@ -8,11 +8,11 @@ import java.util.*;
 
 public class InMemoryHistoryManager implements HistoryManager {
 
-    private final CustomLinkedList<Task> history;
-    private final Map<Integer, Node<Task>> linkedHashMap;
+    private final CustomLinkedList history;
+    private final Map<Integer, Node> linkedHashMap;
 
     public InMemoryHistoryManager() {
-        history = new CustomLinkedList<>();
+        history = new CustomLinkedList();
         linkedHashMap = new HashMap<>();
     }
 
@@ -34,14 +34,14 @@ public class InMemoryHistoryManager implements HistoryManager {
         return history.getTasks();
     }
 
-    static class CustomLinkedList<T extends Task> {
+    static class CustomLinkedList {
 
-        private Node<T> tail;
-        private Node<T> head;
+        private Node tail;
+        private Node head;
 
-        public Node<T> linkLast(T item) {
-            if (item == null) return new Node<>(null);
-            Node<T> vertex = new Node<>(item);
+        public Node linkLast(Task item) {
+            if (item == null) return new Node(null);
+            Node vertex = new Node(item);
             if (head == null) {
                 head = vertex;
                 tail = head;
@@ -53,10 +53,10 @@ public class InMemoryHistoryManager implements HistoryManager {
             return vertex;
         }
 
-        public void removeNode(Node<T> node) {
+        public void removeNode(Node node) {
             if (node == null) return;
-            Node<T> prevNode = node.getPrev();
-            Node<T> nextNode = node.getNext();
+            Node prevNode = node.getPrev();
+            Node nextNode = node.getNext();
 
             if (prevNode == null && nextNode == null) {
                 head = null;
@@ -80,9 +80,9 @@ public class InMemoryHistoryManager implements HistoryManager {
             nextNode.setPrev(prevNode);
         }
 
-        public List<T> getTasks() {
-            Node<T> currentNode = head;
-            List<T> tasks = new ArrayList<>();
+        public List<Task> getTasks() {
+            Node currentNode = head;
+            List<Task> tasks = new ArrayList<>();
             while (currentNode != null) {
                 tasks.add(currentNode.getItem());
                 currentNode = currentNode.getNext();
