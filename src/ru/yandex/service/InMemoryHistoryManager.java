@@ -40,7 +40,6 @@ public class InMemoryHistoryManager implements HistoryManager {
         private Node head;
 
         public Node linkLast(Task item) {
-            if (item == null) return new Node(null);
             Node vertex = new Node(item);
             if (head == null) {
                 head = vertex;
