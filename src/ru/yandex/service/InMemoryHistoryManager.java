@@ -60,7 +60,6 @@ public class InMemoryHistoryManager implements HistoryManager {
             if (prevNode == null && nextNode == null) {
                 head = null;
                 tail = null;
-                node.setItem(null);
                 return;
             }
 
