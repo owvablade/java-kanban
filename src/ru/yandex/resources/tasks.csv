@@ -1,0 +1,10 @@
+id,type,name,status,description,epic
+0,TASK,Пройти 5 спринт,IN_PROGRESS,ЯП,
+1,TASK,Помыть посуду,NEW,Дом,
+2,EPIC,Сделать ФП5,IN_PROGRESS,ЯП,
+3,SUBTASK,Декомпозировать задачу,DONE,ЯП ФП,2
+4,EPIC,Приготовить еду,NEW,Дом,
+5,SUBTASK,Написать код,IN_PROGRESS,ЯП ФП,2
+6,SUBTASK,Отправить решение,NEW,ЯП ФП,2
+
+0,2,4,3,1
