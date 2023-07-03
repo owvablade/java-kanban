@@ -11,12 +11,12 @@ import java.util.List;
 
 public class InMemoryTaskManager implements TaskManager {
 
-    private int id;
-    private final HistoryManager history;
+    protected int id;
+    protected final HistoryManager history;
     private final StatusChecker statusChecker;
-    private final TaskStorage<Task> taskStorage;
-    private final TaskStorage<Epic> epicStorage;
-    private final TaskStorage<Subtask> subtaskStorage;
+    protected final TaskStorage<Task> taskStorage;
+    protected final TaskStorage<Epic> epicStorage;
+    protected final TaskStorage<Subtask> subtaskStorage;
 
     public InMemoryTaskManager() {
         history = Managers.getDefaultHistory();
