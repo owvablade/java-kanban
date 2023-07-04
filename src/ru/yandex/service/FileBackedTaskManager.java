@@ -1,6 +1,5 @@
 package ru.yandex.service;
 
-import ru.yandex.comparators.TaskIdComparator;
 import ru.yandex.exceptions.ManagerLoadException;
 import ru.yandex.exceptions.ManagerSaveException;
 import ru.yandex.model.*;
@@ -12,6 +11,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 public class FileBackedTaskManager extends InMemoryTaskManager {
@@ -22,13 +22,13 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         this.path = path;
     }
 
-    public static FileBackedTaskManager loadFromFile(File file) throws ManagerLoadException {
+    public static FileBackedTaskManager loadFromFile(File file) {
         FileBackedTaskManager manager = new FileBackedTaskManager(file.getPath());
         try {
-            String csv = Files.readString(Paths.get(manager.path));
+            String csv = Files.readString(Paths.get(file.getPath()));
             String[] csvEntries = csv.split("\n");
             List<Task> tasks = manager.deserializeTasks(csvEntries);
-            tasks.sort(new TaskIdComparator());
+            tasks.sort(Comparator.comparingInt(Task::getId));
             if (!tasks.isEmpty()) {
                 manager.id = tasks.get(0).getId();
             }
@@ -41,8 +41,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                     manager.addTask(task);
                 }
             }
-            List<Integer> history = FileBackedTaskManager.historyFromString(csvEntries[csvEntries.length - 1]);
-            for (Integer historyItem : history) {
+            for (Integer historyItem : FileBackedTaskManager.historyFromString(csvEntries[csvEntries.length - 1])) {
                 manager.getTask(historyItem);
                 manager.getEpic(historyItem);
                 manager.getSubtask(historyItem);
@@ -54,11 +53,11 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         return manager;
     }
 
-    private void save() throws ManagerSaveException {
+    private void save() {
         List<Task> tasks = super.getAllTasks();
         tasks.addAll(super.getAllEpics());
         tasks.addAll(super.getAllSubtasks());
-        tasks.sort(new TaskIdComparator());
+        tasks.sort(Comparator.comparingInt(Task::getId));
         try {
             String serializedTasks = serializeTasks(tasks);
             String serializedHistory = historyToString(super.history);
@@ -144,146 +143,93 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     @Override
     public void addTask(Task task) {
         super.addTask(task);
-        try {
-            save();
-        } catch (ManagerSaveException e) {
-            System.out.println(e.getMessage());
-        }
-
+        save();
     }
 
     @Override
     public void addEpic(Epic epic) {
         super.addEpic(epic);
-        try {
-            save();
-        } catch (ManagerSaveException e) {
-            System.out.println(e.getMessage());
-        }
+        save();
     }
 
     @Override
     public void addSubtask(Subtask subtask) {
         super.addSubtask(subtask);
-        try {
-            save();
-        } catch (ManagerSaveException e) {
-            System.out.println(e.getMessage());
-        }
+        save();
     }
 
     @Override
     public void updateTask(Task task) {
         super.updateTask(task);
-        try {
-            save();
-        } catch (ManagerSaveException e) {
-            System.out.println(e.getMessage());
-        }
+        save();
     }
 
     @Override
     public void updateEpic(Epic epic) {
         super.updateEpic(epic);
-        try {
-            save();
-        } catch (ManagerSaveException e) {
-            System.out.println(e.getMessage());
-        }
+        save();
     }
 
     @Override
     public void updateSubtask(Subtask subtask) {
         super.updateSubtask(subtask);
-        try {
-            save();
-        } catch (ManagerSaveException e) {
-            System.out.println(e.getMessage());
-        }
+        save();
     }
 
     @Override
     public void deleteTask(int id) {
         super.deleteTask(id);
-        try {
-            save();
-        } catch (ManagerSaveException e) {
-            System.out.println(e.getMessage());
-        }
+        save();
     }
 
     @Override
     public void deleteEpic(int id) {
         super.deleteEpic(id);
-        try {
-            save();
-        } catch (ManagerSaveException e) {
-            System.out.println(e.getMessage());
-        }
+        save();
     }
 
     @Override
     public void deleteSubtask(int id) {
         super.deleteSubtask(id);
-        try {
-            save();
-        } catch (ManagerSaveException e) {
-            System.out.println(e.getMessage());
-        }
+        save();
     }
 
     @Override
     public void deleteAllTasks() {
         super.deleteAllTasks();
-        try {
-            save();
-        } catch (ManagerSaveException e) {
-            System.out.println(e.getMessage());
-        }
+        save();
     }
 
     @Override
     public void deleteAllEpics() {
         super.deleteAllEpics();
-        try {
-            save();
-        } catch (ManagerSaveException e) {
-            System.out.println(e.getMessage());
-        }
+        save();
     }
 
     @Override
     public void deleteAllSubtasks() {
         super.deleteAllSubtasks();
-        try {
-            save();
-        } catch (ManagerSaveException e) {
-            System.out.println(e.getMessage());
-        }
+        save();
     }
 
     public static void main(String[] args) {
         String path = "src/ru/yandex/resources/tasks.csv";
+        TaskManager manager = FileBackedTaskManager.loadFromFile(new File(path));
+        System.out.println("Содержимое файла tasks.csv после работы main() в FileBackedTaskManager:");
         try {
-            TaskManager manager = FileBackedTaskManager.loadFromFile(new File(path));
-            System.out.println("Содержимое файла tasks.csv после работы main() в FileBackedTaskManager:");
-            try {
-                System.out.println(Files.readString(Paths.get("src/ru/yandex/resources/tasks.csv")));
-            } catch (IOException e) {
-                System.out.println(e.getMessage());
-            }
-            System.out.println("Проверка содержимого в новом FileBackedTaskManager:");
-            for (Task task : manager.getAllTasks()) {
-                System.out.println(task);
-            }
-            for (Task epic : manager.getAllEpics()) {
-                System.out.println(epic);
-            }
-            for (Task subtask : manager.getAllSubtasks()) {
-                System.out.println(subtask);
-            }
-        } catch (ManagerLoadException e) {
-            System.out.println(e.getMessage() + "\nНе удалось загрузить файл " + path);
+            System.out.println(Files.readString(Paths.get("src/ru/yandex/resources/tasks.csv")));
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+        }
+        System.out.println("Проверка содержимого в новом FileBackedTaskManager:");
+        for (Task task : manager.getAllTasks()) {
+            System.out.println(task);
+        }
+        for (Task epic : manager.getAllEpics()) {
+            System.out.println(epic);
+        }
+        for (Task subtask : manager.getAllSubtasks()) {
+            System.out.println(subtask);
         }
     }
 }
