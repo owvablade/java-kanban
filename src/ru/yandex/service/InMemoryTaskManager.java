@@ -13,7 +13,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     protected int id;
     protected final HistoryManager history;
-    private final StatusChecker statusChecker;
+    protected final StatusChecker statusChecker;
     protected final TaskStorage<Task> taskStorage;
     protected final TaskStorage<Epic> epicStorage;
     protected final TaskStorage<Subtask> subtaskStorage;
