@@ -6,5 +6,8 @@ id,type,name,status,description,epic
 4,EPIC,Приготовить еду,NEW,Дом,
 5,SUBTASK,Написать код,IN_PROGRESS,ЯП ФП,2
 6,SUBTASK,Отправить решение,NEW,ЯП ФП,2
+7,TASK,Почитать книгу,NEW,Личное,
+8,EPIC,Сделать ФП6,DONE,ЯП,
+9,SUBTASK,Декомпозировать задачу,DONE,ЯП ФП,8
 
-0,2,4,3,1
+2,0,6,8,1,5,4,7,3

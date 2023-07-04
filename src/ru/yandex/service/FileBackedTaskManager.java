@@ -10,9 +10,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 public class FileBackedTaskManager extends InMemoryTaskManager {
 
@@ -34,11 +32,19 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
             }
             for (Task task : tasks) {
                 if (task instanceof Subtask) {
-                    manager.addSubtask((Subtask) task);
+                    Subtask subtask = (Subtask) task;
+                    manager.subtaskStorage.add(subtask);
+                    manager.epicStorage.get(subtask.getEpicId()).addSubtask(subtask);
+                    manager.statusChecker.checkEpicStatus(subtask.getEpicId());
+                    manager.id++;
                 } else if (task instanceof Epic) {
-                    manager.addEpic((Epic) task);
+                    Epic epic = (Epic) task;
+                    manager.epicStorage.add(epic);
+                    manager.statusChecker.checkEpicStatus(epic.getId());
+                    manager.id++;
                 } else {
-                    manager.addTask(task);
+                    manager.taskStorage.add(task);
+                    manager.id++;
                 }
             }
             for (Integer historyItem : FileBackedTaskManager.historyFromString(csvEntries[csvEntries.length - 1])) {
@@ -46,7 +52,6 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                 manager.getEpic(historyItem);
                 manager.getSubtask(historyItem);
             }
-            manager.save();
         } catch (IOException e) {
             throw new ManagerLoadException(e.getMessage());
         }
@@ -54,9 +59,9 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     }
 
     private void save() {
-        List<Task> tasks = super.getAllTasks();
-        tasks.addAll(super.getAllEpics());
-        tasks.addAll(super.getAllSubtasks());
+        List<Task> tasks = getAllTasks();
+        tasks.addAll(getAllEpics());
+        tasks.addAll(getAllSubtasks());
         tasks.sort(Comparator.comparingInt(Task::getId));
         try {
             String serializedTasks = serializeTasks(tasks);
@@ -213,14 +218,63 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     }
 
     public static void main(String[] args) {
+        final Random random = new Random();
         String path = "src/ru/yandex/resources/tasks.csv";
         TaskManager manager = FileBackedTaskManager.loadFromFile(new File(path));
+
         System.out.println("Содержимое файла tasks.csv после работы main() в FileBackedTaskManager:");
+        printFileContent(path);
+
+        printManagerContent(manager);
+
+        Task task1 = new Task()
+                .setId(random.nextInt())
+                .setName("Почитать книгу")
+                .setStatus(Status.NEW)
+                .setDescription("Личное");
+        manager.addTask(task1);
+
+        Epic epic1 = (Epic) new Epic()
+                .setId(random.nextInt())
+                .setName("Сделать ФП6")
+                .setStatus(Status.NEW)
+                .setDescription("ЯП");
+        manager.addEpic(epic1);
+
+        List<Task> tasks = manager.getAllTasks();
+        tasks.addAll(manager.getAllEpics());
+        tasks.addAll(manager.getAllSubtasks());
+        Collections.shuffle(tasks);
+        for (Task task : tasks) {
+            manager.getTask(task.getId());
+            manager.getEpic(task.getId());
+            manager.getSubtask(task.getId());
+        }
+
+        Subtask epic1subtask1 = (Subtask) new Subtask()
+                .setId(random.nextInt())
+                .setName("Декомпозировать задачу")
+                .setStatus(Status.DONE)
+                .setDescription("ЯП ФП");
+        epic1subtask1.setEpicId(epic1.getId());
+        manager.addSubtask(epic1subtask1);
+
+        System.out.println("\nСодержимое файла tasks.csv после формирования новой истории и " +
+                "добавления новых задач в новый FileBackedTaskManager:");
+        printFileContent(path);
+
+        printManagerContent(manager);
+    }
+
+    private static void printFileContent(String path) {
         try {
-            System.out.println(Files.readString(Paths.get("src/ru/yandex/resources/tasks.csv")));
+            System.out.println(Files.readString(Paths.get(path)));
         } catch (IOException e) {
             System.out.println(e.getMessage());
         }
+    }
+
+    private static void printManagerContent(TaskManager manager) {
         System.out.println("Проверка содержимого в новом FileBackedTaskManager:");
         for (Task task : manager.getAllTasks()) {
             System.out.println(task);
