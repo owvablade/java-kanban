@@ -36,17 +36,18 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                     manager.subtaskStorage.add(subtask);
                     manager.epicStorage.get(subtask.getEpicId()).addSubtask(subtask);
                     manager.statusChecker.checkEpicStatus(subtask.getEpicId());
-                    manager.id++;
+                    manager.id = subtask.getId();
                 } else if (task instanceof Epic) {
                     Epic epic = (Epic) task;
                     manager.epicStorage.add(epic);
                     manager.statusChecker.checkEpicStatus(epic.getId());
-                    manager.id++;
+                    manager.id = epic.getId();
                 } else {
                     manager.taskStorage.add(task);
-                    manager.id++;
+                    manager.id = task.getId();
                 }
             }
+            manager.id++;
             for (Integer historyItem : FileBackedTaskManager.historyFromString(csvEntries[csvEntries.length - 1])) {
                 manager.getTask(historyItem);
                 manager.getEpic(historyItem);

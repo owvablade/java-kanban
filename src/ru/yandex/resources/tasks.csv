@@ -10,4 +10,4 @@ id,type,name,status,description,epic
 8,EPIC,Сделать ФП6,DONE,ЯП,
 9,SUBTASK,Декомпозировать задачу,DONE,ЯП ФП,8
 
-2,0,6,8,1,5,4,7,3
+0,7,2,5,1,8,6,4,3
