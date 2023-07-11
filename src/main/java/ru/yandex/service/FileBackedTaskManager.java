@@ -220,7 +220,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
     public static void main(String[] args) {
         final Random random = new Random();
-        String path = "src/ru/yandex/resources/tasks.csv";
+        String path = "src/main/java/ru/yandex/resources/tasks.csv";
         TaskManager manager = FileBackedTaskManager.loadFromFile(new File(path));
 
         System.out.println("Содержимое файла tasks.csv после работы main() в FileBackedTaskManager:");

@@ -11,7 +11,8 @@ import java.util.*;
 public class Main {
 
     private static final Random random = new Random();
-    private static final TaskManager manager = Managers.getFileBackedManager("src/ru/yandex/resources/tasks.csv");
+    private static final String PATH = "src/main/java/ru/yandex/resources/tasks.csv";
+    private static final TaskManager manager = Managers.getFileBackedManager(PATH);
 
     public static void main(String[] args) {
         Task task1 = new Task()
@@ -71,7 +72,7 @@ public class Main {
 
         System.out.println("Содержимое файла tasks.csv после работы main() в Main:");
         try {
-            System.out.println(Files.readString(Paths.get("src/ru/yandex/resources/tasks.csv")));
+            System.out.println(Files.readString(Paths.get(PATH)));
         } catch (IOException e) {
             System.out.println(e.getMessage());
         }
