@@ -7,14 +7,12 @@ import java.util.List;
 
 public class StatusChecker {
 
-    private final TaskStorage<Epic> epicStorage;
+    private StatusChecker() {
 
-    public StatusChecker(TaskStorage<Epic> epicStorage) {
-        this.epicStorage = epicStorage;
     }
 
-    public void checkEpicStatus(int id) {
-        Epic epic = epicStorage.get(id);
+    public static void checkEpicStatus(Epic epic) {
+        if (epic == null) return;
         List<Subtask> epicSubtasks = epic.getSubtasks();
         if (epicSubtasks.isEmpty()) {
             epic.setStatus(Status.NEW);
@@ -38,6 +36,8 @@ public class StatusChecker {
             epic.setStatus(Status.NEW);
         } else if (isDone) {
             epic.setStatus(Status.DONE);
+        } else {
+            epic.setStatus(Status.NEW);
         }
     }
 }

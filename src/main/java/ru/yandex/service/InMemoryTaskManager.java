@@ -7,13 +7,13 @@ import ru.yandex.storage.InMemoryTaskStorage;
 import ru.yandex.storage.interfaces.TaskStorage;
 import ru.yandex.util.Managers;
 
+import java.util.Collections;
 import java.util.List;
 
 public class InMemoryTaskManager implements TaskManager {
 
     protected int id;
     protected final HistoryManager history;
-    protected final StatusChecker statusChecker;
     protected final TaskStorage<Task> taskStorage;
     protected final TaskStorage<Epic> epicStorage;
     protected final TaskStorage<Subtask> subtaskStorage;
@@ -23,7 +23,6 @@ public class InMemoryTaskManager implements TaskManager {
         taskStorage = new InMemoryTaskStorage<>();
         epicStorage = new InMemoryTaskStorage<>();
         subtaskStorage = new InMemoryTaskStorage<>();
-        statusChecker = new StatusChecker(epicStorage);
     }
 
     @Override
@@ -39,17 +38,19 @@ public class InMemoryTaskManager implements TaskManager {
         if (epic == null) return;
         epic.setId(id);
         epicStorage.add(epic);
-        statusChecker.checkEpicStatus(id);
+        StatusChecker.checkEpicStatus(epic);
         id++;
     }
 
     @Override
     public void addSubtask(Subtask subtask) {
         if (subtask == null) return;
+        Epic epicOfSubtask = epicStorage.get(subtask.getEpicId());
+        if (epicOfSubtask == null) return;
         subtask.setId(id);
         subtaskStorage.add(subtask);
-        epicStorage.get(subtask.getEpicId()).addSubtask(subtask);
-        statusChecker.checkEpicStatus(subtask.getEpicId());
+        epicOfSubtask.addSubtask(subtask);
+        StatusChecker.checkEpicStatus(epicOfSubtask);
         id++;
     }
 
@@ -84,15 +85,17 @@ public class InMemoryTaskManager implements TaskManager {
             updateSubtask(subtask);
         }
         epicStorage.update(epic);
-        statusChecker.checkEpicStatus(epic.getId());
+        StatusChecker.checkEpicStatus(epic);
     }
 
     @Override
     public void updateSubtask(Subtask subtask) {
         if (subtask == null) return;
-        epicStorage.get(subtask.getEpicId()).changeSubtask(subtask);
+        Epic epicOfSubtask = epicStorage.get(subtask.getEpicId());
+        if (epicOfSubtask == null) return;
+        epicOfSubtask.changeSubtask(subtask);
         subtaskStorage.update(subtask);
-        statusChecker.checkEpicStatus(subtask.getEpicId());
+        StatusChecker.checkEpicStatus(epicStorage.get(subtask.getEpicId()));
     }
 
     @Override
@@ -103,7 +106,9 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void deleteEpic(int id) {
-        List<Subtask> subtasks = epicStorage.get(id).getSubtasks();
+        Epic epic = epicStorage.get(id);
+        if (epic == null) return;
+        List<Subtask> subtasks = epic.getSubtasks();
         for (Subtask subtask : subtasks) {
             history.remove(subtask.getId());
             subtaskStorage.delete(subtask.getId());
@@ -115,10 +120,11 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void deleteSubtask(int id) {
         Subtask subtask = subtaskStorage.get(id);
+        if (subtask == null) return;
         epicStorage.get(subtask.getEpicId()).deleteSubtask(subtask);
         history.remove(id);
         subtaskStorage.delete(id);
-        statusChecker.checkEpicStatus(subtask.getEpicId());
+        StatusChecker.checkEpicStatus(epicStorage.get(subtask.getEpicId()));
     }
 
     @Override
@@ -138,7 +144,9 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public List<Subtask> getAllEpicSubtasks(int id) {
-        return epicStorage.get(id).getSubtasks();
+        Epic epic = epicStorage.get(id);
+        if (epic == null) return Collections.emptyList();
+        return epic.getSubtasks();
     }
 
     @Override

@@ -25,7 +25,8 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         try {
             String csv = Files.readString(Paths.get(file.getPath()));
             String[] csvEntries = csv.split("\n");
-            List<Task> tasks = manager.deserializeTasks(csvEntries);
+            if (csvEntries.length == 1) return manager;
+            List<Task> tasks = manager.deserializeTasks(takeOnlyTasks(csvEntries));
             tasks.sort(Comparator.comparingInt(Task::getId));
             if (!tasks.isEmpty()) {
                 manager.id = tasks.get(0).getId();
@@ -34,13 +35,14 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                 if (task instanceof Subtask) {
                     Subtask subtask = (Subtask) task;
                     manager.subtaskStorage.add(subtask);
-                    manager.epicStorage.get(subtask.getEpicId()).addSubtask(subtask);
-                    manager.statusChecker.checkEpicStatus(subtask.getEpicId());
+                    Epic epicOfSubtask = manager.epicStorage.get(subtask.getEpicId());
+                    epicOfSubtask.addSubtask(subtask);
+                    StatusChecker.checkEpicStatus(epicOfSubtask);
                     manager.id = subtask.getId();
                 } else if (task instanceof Epic) {
                     Epic epic = (Epic) task;
                     manager.epicStorage.add(epic);
-                    manager.statusChecker.checkEpicStatus(epic.getId());
+                    StatusChecker.checkEpicStatus(epic);
                     manager.id = epic.getId();
                 } else {
                     manager.taskStorage.add(task);
@@ -48,6 +50,9 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                 }
             }
             manager.id++;
+            if (!containsHistory(csvEntries)) {
+                return manager;
+            }
             for (Integer historyItem : FileBackedTaskManager.historyFromString(csvEntries[csvEntries.length - 1])) {
                 manager.getTask(historyItem);
                 manager.getEpic(historyItem);
@@ -84,8 +89,8 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
     private List<Task> deserializeTasks(String[] values) {
         List<Task> tasks = new ArrayList<>();
-        for (int i = 1; i < values.length - 2; i++) {
-            tasks.add(fromString(values[i]));
+        for (String value : values) {
+            tasks.add(fromString(value));
         }
         return tasks;
     }
@@ -144,6 +149,24 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
             history.add(Integer.parseInt(field));
         }
         return history;
+    }
+
+    private static String[] takeOnlyTasks(String[] csvEntries) {
+        int taskCount = csvEntries.length;
+        if (containsHistory(csvEntries)) {
+            taskCount -= 2;
+        }
+        List<String> tasks = new ArrayList<>(Arrays.asList(csvEntries).subList(1, taskCount));
+        return tasks.toArray(new String[]{});
+    }
+
+    private static boolean containsHistory(String[] csvEntries) {
+        try {
+            historyFromString(csvEntries[csvEntries.length - 1]);
+            return true;
+        } catch (NumberFormatException nfe) {
+            return false;
+        }
     }
 
     @Override
