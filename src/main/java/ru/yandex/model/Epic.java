@@ -1,15 +1,22 @@
 package ru.yandex.model;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+import java.util.*;
 
 public class Epic extends Task {
 
     private List<Subtask> subtasks;
+    protected LocalDateTime endTime;
 
     public Epic() {
+        super();
+        subtasks = new ArrayList<>();
+    }
+
+    public Epic(LocalDateTime startTime, long duration) {
+        super(startTime, duration);
         subtasks = new ArrayList<>();
     }
 
@@ -23,6 +30,7 @@ public class Epic extends Task {
 
     public void addSubtask(Subtask subtask) {
         subtasks.add(subtask);
+        this.getEndTime();
     }
 
     public void changeSubtask(Subtask subtask) {
@@ -35,6 +43,22 @@ public class Epic extends Task {
 
     public void deleteSubtask(Subtask subtask) {
         subtasks.remove(subtask);
+    }
+
+    @Override
+    public LocalDateTime getEndTime() {
+        startTime = subtasks.stream()
+                .map(Task::getStartTime)
+                .min(LocalDateTime::compareTo)
+                .orElse(startTime);
+        endTime = subtasks.stream()
+                .map(Task::getEndTime)
+                .max(LocalDateTime::compareTo)
+                .orElse(startTime.plus(duration));
+        duration = subtasks.stream()
+                .map(Task::getDuration)
+                .reduce(Duration.ZERO, Duration::plus);
+        return endTime.truncatedTo(ChronoUnit.SECONDS);
     }
 
     @Override
@@ -58,6 +82,9 @@ public class Epic extends Task {
                 ", name='" + name + '\'' +
                 ", status='" + status + '\'' +
                 ", description='" + description + '\'' +
+                ", startTime='" + startTime + '\'' +
+                ", duration='" + duration + '\'' +
+                ", endTime='" + endTime + '\'' +
                 ", epicSubtasks=" + Arrays.toString(subtasks.toArray()) +
                 '}';
     }

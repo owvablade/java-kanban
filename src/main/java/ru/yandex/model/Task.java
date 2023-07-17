@@ -1,5 +1,8 @@
 package ru.yandex.model;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Objects;
 
 public class Task {
@@ -8,6 +11,15 @@ public class Task {
     protected String name;
     protected Status status;
     protected String description;
+    protected Duration duration;
+    protected LocalDateTime startTime;
+
+    public Task() {}
+
+    public Task(LocalDateTime startTime, long duration) {
+        this.startTime = startTime.truncatedTo(ChronoUnit.SECONDS);
+        this.duration = Duration.ofMinutes(duration);
+    }
 
     public int getId() {
         return id;
@@ -45,6 +57,28 @@ public class Task {
         return this;
     }
 
+    public Duration getDuration() {
+        return duration;
+    }
+
+    public Task setDuration(Duration duration) {
+        this.duration = duration;
+        return this;
+    }
+
+    public LocalDateTime getStartTime() {
+        return startTime;
+    }
+
+    public Task setStartTime(LocalDateTime startTime) {
+        this.startTime = startTime.truncatedTo(ChronoUnit.SECONDS);
+        return this;
+    }
+
+    public LocalDateTime getEndTime() {
+        return startTime.plus(duration);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -68,6 +102,8 @@ public class Task {
                 ", name='" + name + '\'' +
                 ", status='" + status + '\'' +
                 ", description='" + description + '\'' +
+                ", startTime='" + startTime + '\'' +
+                ", duration='" + duration + '\'' +
                 '}';
     }
 }
