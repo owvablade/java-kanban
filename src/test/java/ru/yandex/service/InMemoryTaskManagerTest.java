@@ -2,9 +2,6 @@ package ru.yandex.service;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import ru.yandex.model.Status;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 public class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager> {
 
@@ -211,5 +208,10 @@ public class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager
     @Test
     void getHistory() {
         super.getHistory();
+    }
+
+    @Test
+    void shouldReturnPrioritizedTasks() {
+        super.getPrioritizedTasks();
     }
 }

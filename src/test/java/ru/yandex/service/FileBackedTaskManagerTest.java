@@ -428,4 +428,9 @@ class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTaskManager> {
     void getHistory() {
         super.getHistory();
     }
+
+    @Test
+    void shouldReturnPrioritizedTasks() {
+        super.getPrioritizedTasks();
+    }
 }

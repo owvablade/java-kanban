@@ -16,8 +16,12 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public abstract class TaskManagerTest<T extends TaskManager> {
 
-    private static final LocalDateTime START_TIME
+    private static final LocalDateTime START_TIME_1
             = LocalDateTime.of(2023, 7, 17, 10, 0);
+    private static final LocalDateTime START_TIME_2
+            = LocalDateTime.of(2023, 7, 17, 11, 0);
+    private static final LocalDateTime START_TIME_3
+            = LocalDateTime.of(2023, 7, 17, 12, 0);
     protected T manager;
     protected Task task;
     protected Epic epic;
@@ -25,17 +29,17 @@ public abstract class TaskManagerTest<T extends TaskManager> {
 
     @BeforeEach
     public void initializeTasks() {
-        task = new Task(START_TIME, 20)
+        task = new Task(START_TIME_1, 20)
                 .setId(0)
                 .setName("Task")
                 .setStatus(Status.NEW)
                 .setDescription("Task description");
-        epic = (Epic) new Epic(START_TIME, 20)
+        epic = (Epic) new Epic(START_TIME_1, 20)
                 .setId(1)
                 .setName("Epic")
                 .setStatus(Status.NEW)
                 .setDescription("Epic description");
-        subtask = (Subtask) new Subtask(START_TIME, 30)
+        subtask = (Subtask) new Subtask(START_TIME_1, 30)
                 .setEpicId(1)
                 .setId(2)
                 .setName("Subtask")
@@ -180,7 +184,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     void updateTaskWithSameId() {
         final String expectedName = "New task";
         manager.addTask(task);
-        Task newTask = new Task(START_TIME, 20)
+        Task newTask = new Task(START_TIME_1, 20)
                 .setId(task.getId())
                 .setName(expectedName);
         manager.updateTask(newTask);
@@ -202,7 +206,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     void updateEpicWithNoSubtask() {
         final String expectedName = "New epic";
         manager.addEpic(epic);
-        Epic newEpic = (Epic) new Epic(START_TIME, 20)
+        Epic newEpic = (Epic) new Epic(START_TIME_1, 20)
                 .setId(task.getId())
                 .setName(expectedName);
         manager.updateEpic(newEpic);
@@ -216,10 +220,10 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         manager.addEpic(epic);
         subtask.setEpicId(epic.getId());
         manager.addSubtask(subtask);
-        Epic newEpic = (Epic) new Epic(START_TIME, 20)
+        Epic newEpic = (Epic) new Epic(START_TIME_1, 20)
                 .setId(epic.getId())
                 .setName(expectedNameForEpic);
-        Subtask newSubtask = (Subtask) new Subtask(START_TIME, 30)
+        Subtask newSubtask = (Subtask) new Subtask(START_TIME_1, 30)
                 .setEpicId(newEpic.getId())
                 .setId(subtask.getId())
                 .setName("New subtask")
@@ -250,7 +254,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         manager.addEpic(epic);
         subtask.setEpicId(epic.getId());
         manager.addSubtask(subtask);
-        Subtask newSubtask = (Subtask) new Subtask(START_TIME, 20)
+        Subtask newSubtask = (Subtask) new Subtask(START_TIME_1, 20)
                 .setEpicId(epic.getId())
                 .setId(subtask.getId())
                 .setName("New subtask")
@@ -441,5 +445,21 @@ public abstract class TaskManagerTest<T extends TaskManager> {
                 .map(Task::getId)
                 .collect(Collectors.toList());
         assertEquals(expectedHistoryId, actualHistoryId);
+    }
+
+    void getPrioritizedTasks() {
+        List<Task> expectedResult = List.of(task, epic);
+        epic.setStartTime(START_TIME_2);
+        subtask.setStartTime(START_TIME_3);
+        manager.addTask(task);
+        manager.addEpic(epic);
+        manager.addSubtask(subtask);
+        List<Task> actualResult = manager.getPrioritizedTasks();
+        assertEquals(expectedResult, actualResult);
+
+        expectedResult = List.of(task);
+        epic.setStartTime(START_TIME_1);
+        actualResult = manager.getPrioritizedTasks();
+        assertEquals(expectedResult, actualResult);
     }
 }

@@ -4,8 +4,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.yandex.service.StatusChecker;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -13,13 +15,15 @@ class EpicTest {
 
     private static final LocalDateTime START_TIME
             = LocalDateTime.of(2023, 7, 17, 10, 0);
+    private static final LocalDateTime END_TIME
+            = LocalDateTime.of(2023, 7, 17, 10, 30);
     private static Epic epic;
     private static Subtask firstSubtask;
     private static Subtask secondSubtask;
 
     @BeforeEach
     void startup() {
-        epic = (Epic) new Epic(START_TIME, 20)
+        epic = (Epic) new Epic()
                 .setId(1)
                 .setName("Epic")
                 .setDescription("Epic description");
@@ -125,5 +129,19 @@ class EpicTest {
         epic.addSubtask(secondSubtask);
         StatusChecker.checkEpicStatus(epic);
         assertEquals(Status.NEW, epic.getStatus());
+    }
+
+    @Test
+    void shouldHaveCorrectTimeAndDuration() {
+        assertAll(
+                () -> assertEquals(Optional.empty(), epic.getStartTime()),
+                () -> assertEquals(Optional.empty(), epic.getDuration())
+        );
+        epic.addSubtask(firstSubtask);
+        epic.addSubtask(secondSubtask);
+        assertAll(
+                () -> assertEquals(END_TIME, epic.getEndTime().orElseThrow()),
+                () -> assertEquals(Duration.ofMinutes(50), epic.getDuration().orElseThrow())
+        );
     }
 }
