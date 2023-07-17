@@ -1,13 +1,5 @@
-id,type,name,status,description,epic
-0,TASK,Пройти 5 спринт,IN_PROGRESS,ЯП,
-1,TASK,Помыть посуду,NEW,Дом,
-2,EPIC,Сделать ФП5,IN_PROGRESS,ЯП,
-3,SUBTASK,Декомпозировать задачу,DONE,ЯП ФП,2
-4,EPIC,Приготовить еду,NEW,Дом,
-5,SUBTASK,Написать код,IN_PROGRESS,ЯП ФП,2
-6,SUBTASK,Отправить решение,NEW,ЯП ФП,2
-7,TASK,Почитать книгу,NEW,Личное,
-8,EPIC,Сделать ФП6,DONE,ЯП,
-9,SUBTASK,Декомпозировать задачу,DONE,ЯП ФП,8
+id,type,name,status,description,startTime,duration,endTime,epic
+1,EPIC,Epic,NEW,Epic description,2023-07-17T13:00,PT20M,2023-07-17T13:20,
+2,SUBTASK,Subtask,NEW,Subtask description,2023-07-17T13:00,PT20M,2023-07-17T13:20,1
 
-0,3,4,8,7,5,1,2,6
+1
