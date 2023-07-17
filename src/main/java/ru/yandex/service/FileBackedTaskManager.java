@@ -11,6 +11,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeParseException;
 import java.util.*;
 
 public class FileBackedTaskManager extends InMemoryTaskManager {
@@ -107,9 +108,18 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         sb.append(task.getName()).append(",");
         sb.append(task.getStatus()).append(",");
         sb.append(task.getDescription()).append(",");
-        sb.append(task.getStartTime()).append(",");
-        sb.append(task.getDuration()).append(",");
-        sb.append(task.getEndTime()).append(",");
+        if (task.getStartTime().isPresent()) {
+            sb.append(task.getStartTime().get());
+        }
+        sb.append(",");
+        if (task.getDuration().isPresent()) {
+            sb.append(task.getDuration().get());
+        }
+        sb.append(",");
+        if (task.getEndTime().isPresent()) {
+            sb.append(task.getEndTime().get());
+        }
+        sb.append(",");
         if (task instanceof Subtask) {
             sb.append(((Subtask) task).getEpicId());
         }
@@ -134,7 +144,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         try {
             task.setStartTime(LocalDateTime.parse(fields[5]));
             task.setDuration(Duration.parse(fields[6]));
-        } catch (NullPointerException npe) {
+        } catch (DateTimeParseException e) {
             return task;
         }
         return task;

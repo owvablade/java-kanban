@@ -93,7 +93,7 @@ class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTaskManager> {
     @Test
     void shouldSaveEpicWithoutSubtask() {
         final String expectedFileContent = "id,type,name,status,description,startTime,duration,endTime,epic\n" +
-                "0,EPIC,Epic,NEW,Epic description,2023-07-17T10:00,PT20M,2023-07-17T10:20,\n";
+                "0,EPIC,Epic,NEW,Epic description,2023-07-17T10:00,PT20M,,\n";
         manager.addEpic(epic);
         try {
             final String actualFileContent = Files.readString(Paths.get(PATH));

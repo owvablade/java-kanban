@@ -46,19 +46,25 @@ public class Epic extends Task {
     }
 
     @Override
-    public LocalDateTime getEndTime() {
-        startTime = subtasks.stream()
+    public Optional<LocalDateTime> getEndTime() {
+        Optional<LocalDateTime> optionalStartTime = subtasks.stream()
                 .map(Task::getStartTime)
-                .min(LocalDateTime::compareTo)
-                .orElse(startTime);
-        endTime = subtasks.stream()
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .min(LocalDateTime::compareTo);
+        Optional<LocalDateTime> optionalEndTime = subtasks.stream()
                 .map(Task::getEndTime)
-                .max(LocalDateTime::compareTo)
-                .orElse(startTime.plus(duration));
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .max(LocalDateTime::compareTo);
         duration = subtasks.stream()
                 .map(Task::getDuration)
+                .filter(Optional::isPresent)
+                .map(Optional::get)
                 .reduce(Duration.ZERO, Duration::plus);
-        return endTime.truncatedTo(ChronoUnit.SECONDS);
+        optionalStartTime.ifPresent(localDateTime -> startTime = localDateTime.truncatedTo(ChronoUnit.SECONDS));
+        optionalEndTime.ifPresent(localDateTime -> endTime = localDateTime.truncatedTo(ChronoUnit.SECONDS));
+        return optionalEndTime;
     }
 
     @Override

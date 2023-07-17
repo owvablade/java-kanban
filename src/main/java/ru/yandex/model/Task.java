@@ -4,6 +4,7 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Objects;
+import java.util.Optional;
 
 public class Task {
 
@@ -57,8 +58,8 @@ public class Task {
         return this;
     }
 
-    public Duration getDuration() {
-        return duration;
+    public Optional<Duration> getDuration() {
+        return Optional.ofNullable(duration);
     }
 
     public Task setDuration(Duration duration) {
@@ -66,8 +67,8 @@ public class Task {
         return this;
     }
 
-    public LocalDateTime getStartTime() {
-        return startTime;
+    public Optional<LocalDateTime> getStartTime() {
+        return Optional.ofNullable(startTime);
     }
 
     public Task setStartTime(LocalDateTime startTime) {
@@ -75,8 +76,9 @@ public class Task {
         return this;
     }
 
-    public LocalDateTime getEndTime() {
-        return startTime.plus(duration);
+    public Optional<LocalDateTime> getEndTime() {
+        if (startTime == null || duration == null) return Optional.empty();
+        return Optional.of(startTime.plus(duration));
     }
 
     @Override
