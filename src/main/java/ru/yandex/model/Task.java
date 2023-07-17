@@ -15,7 +15,8 @@ public class Task {
     protected Duration duration;
     protected LocalDateTime startTime;
 
-    public Task() {}
+    public Task() {
+    }
 
     public Task(LocalDateTime startTime, long duration) {
         this.startTime = startTime.truncatedTo(ChronoUnit.SECONDS);
