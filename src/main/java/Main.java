@@ -30,12 +30,6 @@ public class Main {
                 .setStatus(Status.NEW)
                 .setDescription("Task description");
         manager.addTask(task1);
-        Task task2 = new Task(START_TIME_2, 100)
-                .setId(task1.getId())
-                .setName("Task")
-                .setStatus(Status.NEW)
-                .setDescription("Task description");
-        manager.deleteTask(task1.getId());
 
         Epic epic1 = (Epic) new Epic(START_TIME_2, 30)
                 .setId(random.nextInt())
