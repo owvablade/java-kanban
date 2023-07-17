@@ -4,27 +4,31 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.yandex.service.StatusChecker;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class EpicTest {
 
+    private static final LocalDateTime START_TIME
+            = LocalDateTime.of(2023, 7, 17, 10, 0);
     private static Epic epic;
     private static Subtask firstSubtask;
     private static Subtask secondSubtask;
 
     @BeforeEach
     void startup() {
-        epic = (Epic) new Epic().setId(1)
+        epic = (Epic) new Epic(START_TIME, 20)
+                .setId(1)
                 .setName("Epic")
                 .setDescription("Epic description");
-        firstSubtask = (Subtask) new Subtask()
+        firstSubtask = (Subtask) new Subtask(START_TIME, 20)
                 .setEpicId(1)
                 .setId(2)
                 .setName("First subtask")
                 .setDescription("First subtask description");
-        secondSubtask = (Subtask) new Subtask()
+        secondSubtask = (Subtask) new Subtask(START_TIME, 30)
                 .setEpicId(1)
                 .setId(3)
                 .setName("Second subtask")

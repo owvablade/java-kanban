@@ -39,10 +39,10 @@ class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTaskManager> {
 
     @Test
     void shouldSaveTasksWithHistory() {
-        final String expectedFileContent = "id,type,name,status,description,epic\n" +
-                "0,TASK,Task,NEW,Task description,\n" +
-                "1,EPIC,Epic,NEW,Epic description,\n" +
-                "2,SUBTASK,Subtask,NEW,Subtask description,1\n" +
+        final String expectedFileContent = "id,type,name,status,description,startTime,duration,endTime,epic\n" +
+                "0,TASK,Task,NEW,Task description,2023-07-17T10:00,PT20M,2023-07-17T10:20,\n" +
+                "1,EPIC,Epic,NEW,Epic description,2023-07-17T10:00,PT30M,2023-07-17T10:30,\n" +
+                "2,SUBTASK,Subtask,NEW,Subtask description,2023-07-17T10:00,PT30M,2023-07-17T10:30,1\n" +
                 "\n" +
                 "1,0";
         manager.addTask(task);
@@ -61,10 +61,10 @@ class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTaskManager> {
 
     @Test
     void shouldSaveTasksWithoutHistory() {
-        final String expectedFileContent = "id,type,name,status,description,epic\n" +
-                "0,TASK,Task,NEW,Task description,\n" +
-                "1,EPIC,Epic,NEW,Epic description,\n" +
-                "2,SUBTASK,Subtask,NEW,Subtask description,1\n";
+        final String expectedFileContent = "id,type,name,status,description,startTime,duration,endTime,epic\n" +
+                "0,TASK,Task,NEW,Task description,2023-07-17T10:00,PT20M,2023-07-17T10:20,\n" +
+                "1,EPIC,Epic,NEW,Epic description,2023-07-17T10:00,PT30M,2023-07-17T10:30,\n" +
+                "2,SUBTASK,Subtask,NEW,Subtask description,2023-07-17T10:00,PT30M,2023-07-17T10:30,1\n";
         manager.addTask(task);
         manager.addEpic(epic);
         subtask.setEpicId(epic.getId());
@@ -79,7 +79,7 @@ class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTaskManager> {
 
     @Test
     void shouldSaveEmptyListOfTasks() {
-        final String expectedFileContent = "id,type,name,status,description,epic\n";
+        final String expectedFileContent = "id,type,name,status,description,startTime,duration,endTime,epic\n";
         manager.addTask(task);
         manager.deleteTask(task.getId());
         try {
@@ -92,8 +92,8 @@ class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTaskManager> {
 
     @Test
     void shouldSaveEpicWithoutSubtask() {
-        final String expectedFileContent = "id,type,name,status,description,epic\n" +
-                "0,EPIC,Epic,NEW,Epic description,\n";
+        final String expectedFileContent = "id,type,name,status,description,startTime,duration,endTime,epic\n" +
+                "0,EPIC,Epic,NEW,Epic description,2023-07-17T10:00,PT20M,2023-07-17T10:20,\n";
         manager.addEpic(epic);
         try {
             final String actualFileContent = Files.readString(Paths.get(PATH));
@@ -105,10 +105,10 @@ class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTaskManager> {
 
     @Test
     void shouldLoadTasks() {
-        final String fileContent = "id,type,name,status,description,epic\n" +
-                "0,TASK,Task,NEW,Task description,\n" +
-                "1,EPIC,Epic,NEW,Epic description,\n" +
-                "2,SUBTASK,Subtask,NEW,Subtask description,1\n" +
+        final String fileContent = "id,type,name,status,description,startTime,duration,endTime,epic\n" +
+                "0,TASK,Task,NEW,Task description,2023-07-17T10:00,PT20M,2023-07-17T10:20,\n" +
+                "1,EPIC,Epic,NEW,Epic description,2023-07-17T10:00,PT30M,2023-07-17T10:30,\n" +
+                "2,SUBTASK,Subtask,NEW,Subtask description,2023-07-17T10:00,PT30M,2023-07-17T10:30,1\n" +
                 "\n" +
                 "1,0";
         try (PrintWriter writer = new PrintWriter(PATH)) {
@@ -145,11 +145,10 @@ class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTaskManager> {
 
     @Test
     void shouldLoadTasksWithoutHistory() {
-        final String fileContent = "id,type,name,status,description,epic\n" +
-                "0,TASK,Task,NEW,Task description,\n" +
-                "1,EPIC,Epic,NEW,Epic description,\n" +
-                "2,SUBTASK,Subtask,NEW,Subtask description,1\n" +
-                "\n";
+        final String fileContent = "id,type,name,status,description,startTime,duration,endTime,epic\n" +
+                "0,TASK,Task,NEW,Task description,2023-07-17T10:00,PT20M,2023-07-17T10:20,\n" +
+                "1,EPIC,Epic,NEW,Epic description,2023-07-17T10:00,PT30M,2023-07-17T10:30,\n" +
+                "2,SUBTASK,Subtask,NEW,Subtask description,2023-07-17T10:00,PT30M,2023-07-17T10:30,1\n";
         try (PrintWriter writer = new PrintWriter(PATH)) {
             writer.write(fileContent);
         } catch (FileNotFoundException e) {
@@ -202,9 +201,8 @@ class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTaskManager> {
 
     @Test
     void shouldLoadEpicWithoutSubtasks() {
-        final String fileContent = "id,type,name,status,description,epic\n" +
-                "1,EPIC,Epic,NEW,Epic description,\n" +
-                "\n";
+        final String fileContent = "id,type,name,status,description,startTime,duration,endTime,epic\n" +
+                "1,EPIC,Epic,NEW,Epic description,2023-07-17T10:00,PT30M,2023-07-17T10:30,\n";
         try (PrintWriter writer = new PrintWriter(PATH)) {
             writer.write(fileContent);
         } catch (FileNotFoundException e) {

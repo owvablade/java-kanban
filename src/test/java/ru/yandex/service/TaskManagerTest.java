@@ -7,6 +7,7 @@ import ru.yandex.model.Subtask;
 import ru.yandex.model.Task;
 import ru.yandex.service.interfaces.TaskManager;
 
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -15,6 +16,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public abstract class TaskManagerTest<T extends TaskManager> {
 
+    private static final LocalDateTime START_TIME
+            = LocalDateTime.of(2023, 7, 17, 10, 0);
     protected T manager;
     protected Task task;
     protected Epic epic;
@@ -22,16 +25,17 @@ public abstract class TaskManagerTest<T extends TaskManager> {
 
     @BeforeEach
     public void initializeTasks() {
-        task = new Task()
+        task = new Task(START_TIME, 20)
                 .setId(0)
                 .setName("Task")
                 .setStatus(Status.NEW)
                 .setDescription("Task description");
-        epic = (Epic) new Epic().setId(1)
+        epic = (Epic) new Epic(START_TIME, 20)
+                .setId(1)
                 .setName("Epic")
                 .setStatus(Status.NEW)
                 .setDescription("Epic description");
-        subtask = (Subtask) new Subtask()
+        subtask = (Subtask) new Subtask(START_TIME, 30)
                 .setEpicId(1)
                 .setId(2)
                 .setName("Subtask")
@@ -176,7 +180,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     void updateTaskWithSameId() {
         final String expectedName = "New task";
         manager.addTask(task);
-        Task newTask = new Task()
+        Task newTask = new Task(START_TIME, 20)
                 .setId(task.getId())
                 .setName(expectedName);
         manager.updateTask(newTask);
@@ -198,7 +202,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     void updateEpicWithNoSubtask() {
         final String expectedName = "New epic";
         manager.addEpic(epic);
-        Epic newEpic = (Epic) new Epic()
+        Epic newEpic = (Epic) new Epic(START_TIME, 20)
                 .setId(task.getId())
                 .setName(expectedName);
         manager.updateEpic(newEpic);
@@ -212,10 +216,10 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         manager.addEpic(epic);
         subtask.setEpicId(epic.getId());
         manager.addSubtask(subtask);
-        Epic newEpic = (Epic) new Epic()
+        Epic newEpic = (Epic) new Epic(START_TIME, 20)
                 .setId(epic.getId())
                 .setName(expectedNameForEpic);
-        Subtask newSubtask = (Subtask) new Subtask()
+        Subtask newSubtask = (Subtask) new Subtask(START_TIME, 30)
                 .setEpicId(newEpic.getId())
                 .setId(subtask.getId())
                 .setName("New subtask")
@@ -246,7 +250,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         manager.addEpic(epic);
         subtask.setEpicId(epic.getId());
         manager.addSubtask(subtask);
-        Subtask newSubtask = (Subtask) new Subtask()
+        Subtask newSubtask = (Subtask) new Subtask(START_TIME, 20)
                 .setEpicId(epic.getId())
                 .setId(subtask.getId())
                 .setName("New subtask")
