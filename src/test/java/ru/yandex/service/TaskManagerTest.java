@@ -457,7 +457,17 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         List<Task> actualResult = manager.getPrioritizedTasks();
         assertEquals(expectedResult, actualResult);
 
-        expectedResult = List.of(task);
+        Task newTask = new Task()
+                .setId(0)
+                .setName("New task")
+                .setStatus(Status.NEW)
+                .setDescription("New task description");
+        expectedResult = List.of(task, epic, newTask);
+        manager.addTask(newTask);
+        actualResult = manager.getPrioritizedTasks();
+        assertEquals(expectedResult, actualResult);
+
+        expectedResult = List.of(task, newTask);
         epic.setStartTime(START_TIME_1);
         actualResult = manager.getPrioritizedTasks();
         assertEquals(expectedResult, actualResult);
