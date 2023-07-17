@@ -433,4 +433,14 @@ class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTaskManager> {
     void shouldReturnPrioritizedTasks() {
         super.getPrioritizedTasks();
     }
+
+    @Test
+    void shouldUpdatePrioritizedTasks() {
+        super.updatePrioritizedTasks();
+    }
+
+    @Test
+    void shouldRemovePrioritizedTasks() {
+        super.removePrioritizedTasks();
+    }
 }

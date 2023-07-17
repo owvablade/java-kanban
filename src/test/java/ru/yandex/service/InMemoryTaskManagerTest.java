@@ -214,4 +214,14 @@ public class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager
     void shouldReturnPrioritizedTasks() {
         super.getPrioritizedTasks();
     }
+
+    @Test
+    void shouldUpdatePrioritizedTasks() {
+        super.updatePrioritizedTasks();
+    }
+
+    @Test
+    void shouldRemovePrioritizedTasks() {
+        super.removePrioritizedTasks();
+    }
 }

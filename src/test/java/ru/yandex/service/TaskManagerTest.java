@@ -7,6 +7,7 @@ import ru.yandex.model.Subtask;
 import ru.yandex.model.Task;
 import ru.yandex.service.interfaces.TaskManager;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
@@ -22,6 +23,8 @@ public abstract class TaskManagerTest<T extends TaskManager> {
             = LocalDateTime.of(2023, 7, 17, 11, 0);
     private static final LocalDateTime START_TIME_3
             = LocalDateTime.of(2023, 7, 17, 12, 0);
+    private static final LocalDateTime START_TIME_4
+            = LocalDateTime.of(2023, 7, 17, 13, 0);
     protected T manager;
     protected Task task;
     protected Epic epic;
@@ -470,6 +473,37 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         expectedResult = List.of(task, newTask);
         epic.setStartTime(START_TIME_1);
         actualResult = manager.getPrioritizedTasks();
+        assertEquals(expectedResult, actualResult);
+    }
+
+    void updatePrioritizedTasks() {
+        Task newTask = new Task()
+                .setId(task.getId())
+                .setName("New task")
+                .setDescription("New task description")
+                .setStatus(Status.NEW)
+                .setStartTime(START_TIME_4)
+                .setDuration(Duration.ofMinutes(20));
+        List<Task> expectedResult = List.of(epic, newTask);
+        epic.setStartTime(START_TIME_2);
+        subtask.setStartTime(START_TIME_3);
+        manager.addTask(task);
+        manager.addEpic(epic);
+        manager.addSubtask(subtask);
+        manager.updateTask(newTask);
+        List<Task> actualResult = manager.getPrioritizedTasks();
+        assertEquals(expectedResult, actualResult);
+    }
+
+    void removePrioritizedTasks() {
+        List<Task> expectedResult = List.of(epic);
+        epic.setStartTime(START_TIME_2);
+        subtask.setStartTime(START_TIME_3);
+        manager.addTask(task);
+        manager.addEpic(epic);
+        manager.addSubtask(subtask);
+        manager.deleteTask(task.getId());
+        List<Task> actualResult = manager.getPrioritizedTasks();
         assertEquals(expectedResult, actualResult);
     }
 }
