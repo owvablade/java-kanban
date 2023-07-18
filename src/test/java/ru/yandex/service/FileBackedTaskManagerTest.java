@@ -29,16 +29,14 @@ class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTaskManager> {
     }
 
     @AfterEach
-    void afterEach() {
-        try (PrintWriter writer = new PrintWriter(PATH)) {
-            writer.write("");
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e.getMessage());
-        }
+    void afterEach() throws FileNotFoundException {
+        PrintWriter writer = new PrintWriter(PATH);
+        writer.write("");
+        writer.close();
     }
 
     @Test
-    void shouldSaveTasksWithHistory() {
+    void shouldSaveTasksWithHistory() throws IOException {
         final String expectedFileContent = "id,type,name,status,description,startTime,duration,endTime,epic\n" +
                 "0,TASK,Task,NEW,Task description,2023-07-17T10:00,PT20M,2023-07-17T10:20,\n" +
                 "1,EPIC,Epic,NEW,Epic description,2023-07-17T10:00,PT30M,2023-07-17T10:30,\n" +
@@ -51,16 +49,12 @@ class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTaskManager> {
         manager.getTask(task.getId());
         subtask.setEpicId(epic.getId());
         manager.addSubtask(subtask);
-        try {
-            final String actualFileContent = Files.readString(Paths.get(PATH));
-            assertEquals(expectedFileContent, actualFileContent);
-        } catch (IOException e) {
-            throw new RuntimeException(e.getMessage());
-        }
+        final String actualFileContent = Files.readString(Paths.get(PATH));
+        assertEquals(expectedFileContent, actualFileContent);
     }
 
     @Test
-    void shouldSaveTasksWithoutHistory() {
+    void shouldSaveTasksWithoutHistory() throws IOException {
         final String expectedFileContent = "id,type,name,status,description,startTime,duration,endTime,epic\n" +
                 "0,TASK,Task,NEW,Task description,2023-07-17T10:00,PT20M,2023-07-17T10:20,\n" +
                 "1,EPIC,Epic,NEW,Epic description,2023-07-17T10:00,PT30M,2023-07-17T10:30,\n" +
@@ -69,53 +63,39 @@ class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTaskManager> {
         manager.addEpic(epic);
         subtask.setEpicId(epic.getId());
         manager.addSubtask(subtask);
-        try {
-            final String actualFileContent = Files.readString(Paths.get(PATH));
-            assertEquals(expectedFileContent, actualFileContent);
-        } catch (IOException e) {
-            throw new RuntimeException(e.getMessage());
-        }
+        final String actualFileContent = Files.readString(Paths.get(PATH));
+        assertEquals(expectedFileContent, actualFileContent);
     }
 
     @Test
-    void shouldSaveEmptyListOfTasks() {
+    void shouldSaveEmptyListOfTasks() throws IOException {
         final String expectedFileContent = "id,type,name,status,description,startTime,duration,endTime,epic\n";
         manager.addTask(task);
         manager.deleteTask(task.getId());
-        try {
-            final String actualFileContent = Files.readString(Paths.get(PATH));
-            assertEquals(expectedFileContent, actualFileContent);
-        } catch (IOException e) {
-            throw new RuntimeException(e.getMessage());
-        }
+        final String actualFileContent = Files.readString(Paths.get(PATH));
+        assertEquals(expectedFileContent, actualFileContent);
     }
 
     @Test
-    void shouldSaveEpicWithoutSubtask() {
+    void shouldSaveEpicWithoutSubtask() throws IOException {
         final String expectedFileContent = "id,type,name,status,description,startTime,duration,endTime,epic\n" +
                 "0,EPIC,Epic,NEW,Epic description,2023-07-17T10:00,PT20M,,\n";
         manager.addEpic(epic);
-        try {
-            final String actualFileContent = Files.readString(Paths.get(PATH));
-            assertEquals(expectedFileContent, actualFileContent);
-        } catch (IOException e) {
-            throw new RuntimeException(e.getMessage());
-        }
+        final String actualFileContent = Files.readString(Paths.get(PATH));
+        assertEquals(expectedFileContent, actualFileContent);
     }
 
     @Test
-    void shouldLoadTasks() {
+    void shouldLoadTasks() throws FileNotFoundException {
         final String fileContent = "id,type,name,status,description,startTime,duration,endTime,epic\n" +
                 "0,TASK,Task,NEW,Task description,2023-07-17T10:00,PT20M,2023-07-17T10:20,\n" +
                 "1,EPIC,Epic,NEW,Epic description,2023-07-17T10:00,PT30M,2023-07-17T10:30,\n" +
                 "2,SUBTASK,Subtask,NEW,Subtask description,2023-07-17T10:00,PT30M,2023-07-17T10:30,1\n" +
                 "\n" +
                 "1,0";
-        try (PrintWriter writer = new PrintWriter(PATH)) {
-            writer.write(fileContent);
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e.getMessage());
-        }
+        PrintWriter writer = new PrintWriter(PATH);
+        writer.write(fileContent);
+        writer.close();
         manager = FileBackedTaskManager.loadFromFile(new File(PATH));
         final List<Integer> expectedHistory = List.of(1, 0);
         final List<Integer> actualHistory = manager.getHistory()
@@ -144,16 +124,14 @@ class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTaskManager> {
     }
 
     @Test
-    void shouldLoadTasksWithoutHistory() {
+    void shouldLoadTasksWithoutHistory() throws FileNotFoundException {
         final String fileContent = "id,type,name,status,description,startTime,duration,endTime,epic\n" +
                 "0,TASK,Task,NEW,Task description,2023-07-17T10:00,PT20M,2023-07-17T10:20,\n" +
                 "1,EPIC,Epic,NEW,Epic description,2023-07-17T10:00,PT30M,2023-07-17T10:30,\n" +
                 "2,SUBTASK,Subtask,NEW,Subtask description,2023-07-17T10:00,PT30M,2023-07-17T10:30,1\n";
-        try (PrintWriter writer = new PrintWriter(PATH)) {
-            writer.write(fileContent);
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e.getMessage());
-        }
+        PrintWriter writer = new PrintWriter(PATH);
+        writer.write(fileContent);
+        writer.close();
         manager = FileBackedTaskManager.loadFromFile(new File(PATH));
         final List<Integer> expectedHistory = List.of();
         final List<Integer> actualHistory = manager.getHistory()
@@ -182,14 +160,12 @@ class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTaskManager> {
     }
 
     @Test
-    void shouldLoadEmptyFile() {
+    void shouldLoadEmptyFile() throws FileNotFoundException {
         final int expectedSize = 0;
-        final String fileContent = "id,type,name,status,description,epic\n";
-        try (PrintWriter writer = new PrintWriter(PATH)) {
-            writer.write(fileContent);
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e.getMessage());
-        }
+        final String fileContent = "id,type,name,status,description,startTime,duration,endTime,epic\n";
+        PrintWriter writer = new PrintWriter(PATH);
+        writer.write(fileContent);
+        writer.close();
         manager = FileBackedTaskManager.loadFromFile(new File(PATH));
         assertAll(
                 () -> assertEquals(expectedSize, manager.getAllTasks().size()),
@@ -200,14 +176,12 @@ class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTaskManager> {
     }
 
     @Test
-    void shouldLoadEpicWithoutSubtasks() {
+    void shouldLoadEpicWithoutSubtasks() throws FileNotFoundException {
         final String fileContent = "id,type,name,status,description,startTime,duration,endTime,epic\n" +
                 "1,EPIC,Epic,NEW,Epic description,2023-07-17T10:00,PT30M,2023-07-17T10:30,\n";
-        try (PrintWriter writer = new PrintWriter(PATH)) {
-            writer.write(fileContent);
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e.getMessage());
-        }
+        PrintWriter writer = new PrintWriter(PATH);
+        writer.write(fileContent);
+        writer.close();
         manager = FileBackedTaskManager.loadFromFile(new File(PATH));
         final List<Integer> expectedHistory = List.of();
         final List<Integer> actualHistory = manager.getHistory()
@@ -256,12 +230,7 @@ class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTaskManager> {
 
     @Test
     void shouldAddEpicWithInProgressSubtaskAndSetInProgressStatus() {
-        final int expectedSize = 1;
         super.addEpicWithInProgressSubtask();
-        assertAll(
-                () -> assertEquals(expectedSize, manager.getAllEpics().size()),
-                () -> assertEquals(Status.IN_PROGRESS, epic.getStatus())
-        );
     }
 
     @Test
