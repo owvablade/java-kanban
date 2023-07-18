@@ -1,6 +1,7 @@
 package ru.yandex.service;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import ru.yandex.model.Epic;
 import ru.yandex.model.Status;
 import ru.yandex.model.Subtask;
@@ -50,18 +51,21 @@ public abstract class TaskManagerTest<T extends TaskManager> {
                 .setDescription("Subtask description");
     }
 
+    @Test
     void addTask() {
         manager.addTask(task);
         final int expectedSize = 1;
         assertEquals(expectedSize, manager.getAllTasks().size());
     }
 
+    @Test
     void addNullTask() {
         manager.addTask(null);
         final int expectedSize = 0;
         assertEquals(expectedSize, manager.getAllTasks().size());
     }
 
+    @Test
     void addTaskWithIncorrectId() {
         task.setId(Integer.MIN_VALUE);
         manager.addTask(task);
@@ -69,6 +73,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         assertEquals(expectedSize, manager.getAllTasks().size());
     }
 
+    @Test
     void addEpicWithNoSubtasks() {
         manager.addEpic(epic);
         final int expectedSize = 1;
@@ -78,6 +83,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         );
     }
 
+    @Test
     void addEpicWithNewSubtask() {
         manager.addEpic(epic);
         subtask.setEpicId(epic.getId()).setStatus(Status.NEW);
@@ -89,6 +95,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         );
     }
 
+    @Test
     void addEpicWithDoneSubtask() {
         manager.addEpic(epic);
         subtask.setEpicId(epic.getId()).setStatus(Status.DONE);
@@ -100,6 +107,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         );
     }
 
+    @Test
     void addEpicWithInProgressSubtask() {
         manager.addEpic(epic);
         subtask.setEpicId(epic.getId()).setStatus(Status.IN_PROGRESS);
@@ -111,12 +119,14 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         );
     }
 
+    @Test
     void addNullEpic() {
         manager.addEpic(null);
         final int expectedSize = 0;
         assertEquals(expectedSize, manager.getAllEpics().size());
     }
 
+    @Test
     void addEpicWithIncorrectId() {
         epic.setId(Integer.MIN_VALUE);
         manager.addEpic(epic);
@@ -127,6 +137,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         );
     }
 
+    @Test
     void addSubtaskWithEpicId() {
         manager.addEpic(epic);
         subtask.setEpicId(epic.getId());
@@ -138,12 +149,14 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         );
     }
 
+    @Test
     void addNullSubtask() {
         manager.addSubtask(null);
         final int expectedSize = 0;
         assertEquals(expectedSize, manager.getAllSubtasks().size());
     }
 
+    @Test
     void addSubtaskWithIncorrectEpicId() {
         manager.addEpic(epic);
         subtask.setEpicId(Integer.MIN_VALUE);
@@ -152,26 +165,31 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         assertEquals(expectedSize, manager.getAllSubtasks().size());
     }
 
+    @Test
     void getExistingTask() {
         manager.addTask(task);
         final Task expectedTask = task;
         assertEquals(expectedTask, manager.getTask(task.getId()));
     }
 
+    @Test
     void getNonExistingTask() {
         assertNull(manager.getTask(Integer.MIN_VALUE));
     }
 
+    @Test
     void getExistingEpic() {
         manager.addEpic(epic);
         final Epic expectedEpic = epic;
         assertEquals(expectedEpic, manager.getEpic(epic.getId()));
     }
 
+    @Test
     void getNonExistingEpic() {
         assertNull(manager.getEpic(Integer.MIN_VALUE));
     }
 
+    @Test
     void getExistingSubtask() {
         manager.addEpic(epic);
         subtask.setEpicId(epic.getId());
@@ -180,10 +198,12 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         assertEquals(expectedSubtask, manager.getSubtask(subtask.getId()));
     }
 
+    @Test
     void getNonExistingSubtask() {
         assertNull(manager.getSubtask(Integer.MIN_VALUE));
     }
 
+    @Test
     void updateTaskWithSameId() {
         final String expectedName = "New task";
         manager.addTask(task);
@@ -195,6 +215,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         assertEquals(expectedName, actualName);
     }
 
+    @Test
     void updateTaskWithDifferentId() {
         final String expectedName = "Task";
         manager.addTask(task);
@@ -206,6 +227,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         assertEquals(expectedName, actualName);
     }
 
+    @Test
     void updateEpicWithNoSubtask() {
         final String expectedName = "New epic";
         manager.addEpic(epic);
@@ -217,6 +239,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         assertEquals(expectedName, actualName);
     }
 
+    @Test
     void updateEpicWithSubtask() {
         final String expectedNameForEpic = "New epic";
         final String expectedNameForSubtask = "New subtask";
@@ -242,6 +265,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         );
     }
 
+    @Test
     void updateEpicWithWrongId() {
         manager.addEpic(epic);
         Epic newEpic = (Epic) new Epic()
@@ -252,6 +276,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         assertNull(actualEpic);
     }
 
+    @Test
     void updateSubtaskWithEpicId() {
         final String expectedNameForSubtask = "New subtask";
         manager.addEpic(epic);
@@ -270,6 +295,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         );
     }
 
+    @Test
     void updateSubtaskWithWrongEpicId() {
         final String expectedNameForSubtask = "Subtask";
         manager.addEpic(epic);
@@ -284,6 +310,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         assertEquals(expectedNameForSubtask, actualNameForSubtask);
     }
 
+    @Test
     void deleteTaskWithId() {
         final int expectedSize = 0;
         manager.addTask(task);
@@ -292,6 +319,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         assertEquals(expectedSize, actualSize);
     }
 
+    @Test
     void deleteTaskWithWrongId() {
         final int expectedSize = 1;
         manager.addTask(task);
@@ -300,6 +328,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         assertEquals(expectedSize, actualSize);
     }
 
+    @Test
     void deleteEpicWithIdAndNoSubtasks() {
         final int expectedSize = 0;
         manager.addEpic(epic);
@@ -308,6 +337,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         assertEquals(expectedSize, actualSize);
     }
 
+    @Test
     void deleteEpicWithIdAndSubtasks() {
         final int expectedSizeForEpics = 0;
         final int expectedSizeForSubtasks = 0;
@@ -323,6 +353,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         );
     }
 
+    @Test
     void deleteEpicWithWrongId() {
         final int expectedSize = 1;
         manager.addEpic(epic);
@@ -331,6 +362,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         assertEquals(expectedSize, actualSize);
     }
 
+    @Test
     void deleteSubtaskWithIdAndEpicId() {
         final int expectedSize = 0;
         manager.addEpic(epic);
@@ -345,6 +377,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         );
     }
 
+    @Test
     void deleteSubtaskWithWrongId() {
         final int expectedSize = 1;
         manager.addEpic(epic);
@@ -359,6 +392,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         );
     }
 
+    @Test
     void getAllTasks() {
         assertEquals(0, manager.getAllTasks().size());
         final int expectedSize = 1;
@@ -367,6 +401,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         assertEquals(expectedSize, actualSize);
     }
 
+    @Test
     void getAllEpics() {
         assertEquals(0, manager.getAllEpics().size());
         final int expectedSize = 1;
@@ -375,6 +410,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         assertEquals(expectedSize, actualSize);
     }
 
+    @Test
     void getAllSubtasks() {
         assertEquals(0, manager.getAllSubtasks().size());
         final int expectedSize = 1;
@@ -385,6 +421,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         assertEquals(expectedSize, actualSize);
     }
 
+    @Test
     void getAllEpicSubtasks() {
         assertEquals(0, manager.getAllEpicSubtasks(Integer.MIN_VALUE).size());
         final int expectedSize = 1;
@@ -395,6 +432,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         assertEquals(expectedSize, actualSize);
     }
 
+    @Test
     void deleteAllTasks() {
         final int expectedSize = 0;
         manager.deleteAllTasks();
@@ -404,6 +442,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         assertEquals(expectedSize, manager.getAllTasks().size());
     }
 
+    @Test
     void deleteAllEpics() {
         final int expectedSize = 0;
         manager.deleteAllEpics();
@@ -418,6 +457,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         );
     }
 
+    @Test
     void deleteAllSubtasks() {
         final int expectedSizeForEpics = 1;
         final int expectedSizeForSubtasks = 0;
@@ -433,6 +473,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         );
     }
 
+    @Test
     void getHistory() {
         assertEquals(Collections.emptyList(), manager.getHistory());
         manager.addTask(task);
@@ -450,6 +491,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         assertEquals(expectedHistoryId, actualHistoryId);
     }
 
+    @Test
     void getPrioritizedTasks() {
         List<Task> expectedResult = List.of(task, epic);
         epic.setStartTime(START_TIME_2);
@@ -476,6 +518,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         assertEquals(expectedResult, actualResult);
     }
 
+    @Test
     void updatePrioritizedTasks() {
         Task newTask = new Task()
                 .setId(task.getId())
@@ -495,6 +538,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         assertEquals(expectedResult, actualResult);
     }
 
+    @Test
     void removePrioritizedTasks() {
         List<Task> expectedResult = List.of(epic);
         epic.setStartTime(START_TIME_2);
