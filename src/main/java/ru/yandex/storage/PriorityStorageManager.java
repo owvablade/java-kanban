@@ -8,27 +8,27 @@ import java.util.*;
 
 public class PriorityStorageManager implements PriorityStorage {
 
-    private final Set<Task> priority;
-    private final List<Task> tasksWithoutStartTime;
+    private final List<Task> priority;
 
     public PriorityStorageManager() {
-        tasksWithoutStartTime = new ArrayList<>();
-        priority = new TreeSet<>(Comparator.comparing(t -> t.getStartTime().orElseThrow()));
+        priority = new ArrayList<>();
     }
 
     @Override
     public void add(Task task) {
-        if (task.getStartTime().isPresent() && task.getDuration().isPresent()) {
-            priority.add(task);
-            return;
-        }
-        tasksWithoutStartTime.add(task);
+        checkTaskForCrossingTime(task);
+        priority.add(task);
+        priority.sort(
+                Comparator.nullsLast(
+                        Comparator.comparing(t -> t.getStartTime().orElse(null),
+                                Comparator.nullsLast(Comparator.naturalOrder()))
+                )
+        );
     }
 
     @Override
     public void update(Task task) {
-        if (priority.removeIf(t -> t.getId() == task.getId()) ||
-                tasksWithoutStartTime.removeIf(t -> t.getId() == task.getId())) {
+        if (priority.removeIf(t -> t.getId() == task.getId())) {
             add(task);
         }
     }
@@ -36,23 +36,22 @@ public class PriorityStorageManager implements PriorityStorage {
     @Override
     public void remove(Task task) {
         priority.remove(task);
-        tasksWithoutStartTime.remove(task);
     }
 
     @Override
     public List<Task> getPrioritizedTasks() {
-        List<Task> prioritizedTasks = new LinkedList<>(priority);
-        checkTasksForCrossingTime(prioritizedTasks);
-        prioritizedTasks.addAll(tasksWithoutStartTime);
-        return prioritizedTasks;
+        return priority;
     }
 
-    private void checkTasksForCrossingTime(List<Task> tasks) {
-        for (int i = 0; i < tasks.size() - 1; i++) {
-            LocalDateTime endTimeForCurrentTask = tasks.get(i).getEndTime().orElseThrow();
-            LocalDateTime startTimeForNextTask = tasks.get(i + 1).getStartTime().orElseThrow();
-            if (endTimeForCurrentTask.isBefore(startTimeForNextTask)) continue;
-            tasks.remove(i + 1);
+    private void checkTaskForCrossingTime(Task task) {
+        LocalDateTime taskStartTime = task.getStartTime().orElse(null);
+        if (taskStartTime == null) return;
+        for (Task anotherTask : priority) {
+            LocalDateTime anotherTaskStartTime = anotherTask.getStartTime().orElse(null);
+            if (anotherTaskStartTime == null) return;
+            if (taskStartTime.isEqual(anotherTaskStartTime)) {
+                task.setStartTime(null);
+            }
         }
     }
 }

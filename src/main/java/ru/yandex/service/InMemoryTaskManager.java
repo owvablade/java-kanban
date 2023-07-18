@@ -43,7 +43,6 @@ public class InMemoryTaskManager implements TaskManager {
         epic.setId(id);
         epicStorage.add(epic);
         StatusChecker.checkEpicStatus(epic);
-        priorityStorage.add(epic);
         id++;
     }
 
@@ -93,7 +92,6 @@ public class InMemoryTaskManager implements TaskManager {
         }
         epicStorage.update(epic);
         StatusChecker.checkEpicStatus(epic);
-        priorityStorage.update(epic);
     }
 
     @Override
@@ -120,7 +118,6 @@ public class InMemoryTaskManager implements TaskManager {
     public void deleteEpic(int id) {
         Epic epic = epicStorage.get(id);
         if (epic == null) return;
-        priorityStorage.remove(epic);
         List<Subtask> subtasks = epic.getSubtasks();
         for (Subtask subtask : subtasks) {
             priorityStorage.remove(subtask);
@@ -177,7 +174,6 @@ public class InMemoryTaskManager implements TaskManager {
     public void deleteAllEpics() {
         deleteAllSubtasks();
         for (Epic epic : epicStorage.getAll()) {
-            priorityStorage.remove(epic);
             history.remove(epic.getId());
         }
         epicStorage.deleteAll();

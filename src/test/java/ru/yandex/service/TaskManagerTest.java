@@ -493,7 +493,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
 
     @Test
     void getPrioritizedTasks() {
-        List<Task> expectedResult = List.of(task, epic);
+        List<Task> expectedResult = List.of(task, subtask);
         epic.setStartTime(START_TIME_2);
         subtask.setStartTime(START_TIME_3);
         manager.addTask(task);
@@ -507,12 +507,12 @@ public abstract class TaskManagerTest<T extends TaskManager> {
                 .setName("New task")
                 .setStatus(Status.NEW)
                 .setDescription("New task description");
-        expectedResult = List.of(task, epic, newTask);
+        expectedResult = List.of(task, subtask, newTask);
         manager.addTask(newTask);
         actualResult = manager.getPrioritizedTasks();
         assertEquals(expectedResult, actualResult);
 
-        expectedResult = List.of(task, newTask);
+        expectedResult = List.of(task, subtask, newTask);
         epic.setStartTime(START_TIME_1);
         actualResult = manager.getPrioritizedTasks();
         assertEquals(expectedResult, actualResult);
@@ -527,7 +527,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
                 .setStatus(Status.NEW)
                 .setStartTime(START_TIME_4)
                 .setDuration(Duration.ofMinutes(20));
-        List<Task> expectedResult = List.of(epic, newTask);
+        List<Task> expectedResult = List.of(subtask, newTask);
         epic.setStartTime(START_TIME_2);
         subtask.setStartTime(START_TIME_3);
         manager.addTask(task);
@@ -540,7 +540,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
 
     @Test
     void removePrioritizedTasks() {
-        List<Task> expectedResult = List.of(epic);
+        List<Task> expectedResult = List.of(subtask);
         epic.setStartTime(START_TIME_2);
         subtask.setStartTime(START_TIME_3);
         manager.addTask(task);

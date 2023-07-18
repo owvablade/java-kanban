@@ -73,12 +73,17 @@ public class Task {
     }
 
     public Task setStartTime(LocalDateTime startTime) {
+        if (startTime == null) {
+            this.startTime = null;
+            return this;
+        }
         this.startTime = startTime.truncatedTo(ChronoUnit.SECONDS);
         return this;
     }
 
     public Optional<LocalDateTime> getEndTime() {
-        if (startTime == null || duration == null) return Optional.empty();
+        if (startTime == null) return Optional.empty();
+        if (duration == null) return Optional.of(startTime);
         return Optional.of(startTime.plus(duration));
     }
 

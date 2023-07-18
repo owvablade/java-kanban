@@ -39,8 +39,8 @@ class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTaskManager> {
     void shouldSaveTasksWithHistory() throws IOException {
         final String expectedFileContent = "id,type,name,status,description,startTime,duration,endTime,epic\n" +
                 "0,TASK,Task,NEW,Task description,2023-07-17T10:00,PT20M,2023-07-17T10:20,\n" +
-                "1,EPIC,Epic,NEW,Epic description,2023-07-17T10:00,PT30M,2023-07-17T10:30,\n" +
-                "2,SUBTASK,Subtask,NEW,Subtask description,2023-07-17T10:00,PT30M,2023-07-17T10:30,1\n" +
+                "1,EPIC,Epic,NEW,Epic description,2023-07-17T10:00,PT30M,,\n" +
+                "2,SUBTASK,Subtask,NEW,Subtask description,,PT30M,,1\n" +
                 "\n" +
                 "1,0";
         manager.addTask(task);
@@ -57,8 +57,8 @@ class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTaskManager> {
     void shouldSaveTasksWithoutHistory() throws IOException {
         final String expectedFileContent = "id,type,name,status,description,startTime,duration,endTime,epic\n" +
                 "0,TASK,Task,NEW,Task description,2023-07-17T10:00,PT20M,2023-07-17T10:20,\n" +
-                "1,EPIC,Epic,NEW,Epic description,2023-07-17T10:00,PT30M,2023-07-17T10:30,\n" +
-                "2,SUBTASK,Subtask,NEW,Subtask description,2023-07-17T10:00,PT30M,2023-07-17T10:30,1\n";
+                "1,EPIC,Epic,NEW,Epic description,2023-07-17T10:00,PT30M,,\n" +
+                "2,SUBTASK,Subtask,NEW,Subtask description,,PT30M,,1\n";
         manager.addTask(task);
         manager.addEpic(epic);
         subtask.setEpicId(epic.getId());
