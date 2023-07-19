@@ -46,7 +46,6 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                     Epic epic = (Epic) task;
                     manager.epicStorage.add(epic);
                     StatusChecker.checkEpicStatus(epic);
-                    manager.priorityStorage.add(epic);
                     manager.id = epic.getId();
                 } else {
                     manager.taskStorage.add(task);
