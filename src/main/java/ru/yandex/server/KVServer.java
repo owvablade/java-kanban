@@ -22,6 +22,7 @@ public class KVServer {
         server.createContext("/register", this::register);
         server.createContext("/save", this::save);
         server.createContext("/load", this::load);
+        server.createContext("/delete", this::delete);
     }
 
     private void load(HttpExchange h) throws IOException {
@@ -37,6 +38,14 @@ public class KVServer {
                 if (key.isEmpty()) {
                     System.out.println("Key для сохранения пустой. key указывается в пути: /load/{key}");
                     h.sendResponseHeaders(400, 0);
+                    return;
+                }
+                if ("ids".equals(key)) {
+                    StringBuilder sb = new StringBuilder();
+                    for (String currentKey : data.keySet()) {
+                        sb.append(currentKey).append(",");
+                    }
+                    sendText(h, sb.deleteCharAt(sb.length() - 1).toString());
                     return;
                 }
                 String value = data.get(key);
@@ -81,6 +90,38 @@ public class KVServer {
                 h.sendResponseHeaders(200, 0);
             } else {
                 System.out.println("/save ждёт POST-запрос, а получил: " + h.getRequestMethod());
+                h.sendResponseHeaders(405, 0);
+            }
+        } finally {
+            h.close();
+        }
+    }
+
+    private void delete(HttpExchange h) throws IOException {
+        try {
+            System.out.println("\n/delete");
+            if (!hasAuth(h)) {
+                System.out.println("Запрос неавторизован, нужен параметр в query API_TOKEN со значением апи-ключа");
+                h.sendResponseHeaders(403, 0);
+                return;
+            }
+            if ("DELETE".equals(h.getRequestMethod())) {
+                String key = h.getRequestURI().getPath().substring("/delete/".length());
+                if (key.isEmpty()) {
+                    System.out.println("Key для сохранения пустой. key указывается в пути: /delete/{key}");
+                    h.sendResponseHeaders(400, 0);
+                    return;
+                }
+                String removeValue = data.remove(key);
+                if (removeValue == null) {
+                    System.out.println("Значение по ключу " + key + " не найдено");
+                    h.sendResponseHeaders(400, 0);
+                    return;
+                }
+                System.out.println("Значение для ключа " + key + " успешно удалено!");
+                h.sendResponseHeaders(200, 0);
+            } else {
+                System.out.println("/delete ждёт DELETE-запрос, а получил: " + h.getRequestMethod());
                 h.sendResponseHeaders(405, 0);
             }
         } finally {
