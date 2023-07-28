@@ -18,8 +18,8 @@ import java.util.stream.Collectors;
 
 public class HttpTaskManager extends FileBackedTaskManager {
 
-    private Gson gson;
-    private TaskClient client;
+    private final Gson gson;
+    private final TaskClient client;
 
     public HttpTaskManager(String url) throws IOException, InterruptedException {
         super(url);
@@ -157,6 +157,18 @@ public class HttpTaskManager extends FileBackedTaskManager {
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }
+    }
+
+    public boolean containsTask(int id) {
+        return taskStorage.get(id) != null;
+    }
+
+    public boolean containsEpic(int id) {
+        return epicStorage.get(id) != null;
+    }
+
+    public boolean containsSubtask(int id) {
+        return subtaskStorage.get(id) != null;
     }
 
     @Override
