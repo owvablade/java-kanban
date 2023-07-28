@@ -29,6 +29,9 @@ public class Epic extends Task {
     }
 
     public void addSubtask(Subtask subtask) {
+        if (subtasks.contains(subtask)) {
+            return;
+        }
         subtasks.add(subtask);
         this.getEndTime();
     }

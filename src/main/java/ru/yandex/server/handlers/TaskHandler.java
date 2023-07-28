@@ -93,6 +93,10 @@ public class TaskHandler implements HttpHandler {
             ServerUtil.writeResponse(exchange, "Получен некорректный JSON", 400);
             return;
         }
+        if (task == null) {
+            ServerUtil.writeResponse(exchange, "Task пуст", 400);
+            return;
+        }
         if (manager.getTask(task.getId()) == null) {
             manager.addTask(task);
             ServerUtil.writeResponse(exchange, "Task успешно добавлена", 200);
@@ -108,13 +112,11 @@ public class TaskHandler implements HttpHandler {
             ServerUtil.writeResponse(exchange, "Неверное id для Task", 400);
             return;
         }
-        int sizeBeforeDelete = manager.getAllTasks().size();
-        manager.deleteTask(id);
-        int sizeAfterDelete = manager.getAllTasks().size();
-        if (sizeAfterDelete == sizeBeforeDelete) {
+        if (manager.getTask(id) == null) {
             ServerUtil.writeResponse(exchange, "Task с таким id не существует", 400);
             return;
         }
+        manager.deleteTask(id);
         ServerUtil.writeResponse(exchange, "Task с id=" + id + " успешно удалена", 200);
     }
 

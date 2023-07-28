@@ -103,6 +103,10 @@ public class EpicHandler implements HttpHandler {
             ServerUtil.writeResponse(exchange, "Получен некорректный JSON", 400);
             return;
         }
+        if (epic == null) {
+            ServerUtil.writeResponse(exchange, "Epic пуст", 400);
+            return;
+        }
         if (manager.getEpic(epic.getId()) == null) {
             manager.addEpic(epic);
             ServerUtil.writeResponse(exchange, "Epic успешно добавлена", 200);
@@ -118,13 +122,11 @@ public class EpicHandler implements HttpHandler {
             ServerUtil.writeResponse(exchange, "Неверное id для Epic", 400);
             return;
         }
-        int sizeBeforeDelete = manager.getAllEpics().size();
-        manager.deleteEpic(id);
-        int sizeAfterDelete = manager.getAllEpics().size();
-        if (sizeAfterDelete == sizeBeforeDelete) {
+        if (manager.getEpic(id) == null) {
             ServerUtil.writeResponse(exchange, "Epic с таким id не существует", 400);
             return;
         }
+        manager.deleteEpic(id);
         ServerUtil.writeResponse(exchange, "Epic с id=" + id + " успешно удалена", 200);
     }
 

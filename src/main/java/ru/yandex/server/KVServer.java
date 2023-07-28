@@ -45,6 +45,11 @@ public class KVServer {
                     for (String currentKey : data.keySet()) {
                         sb.append(currentKey).append(",");
                     }
+                    if (sb.length() == 0) {
+                        System.out.println("Сервер пуст");
+                        h.sendResponseHeaders(400, 0);
+                        return;
+                    }
                     sendText(h, sb.deleteCharAt(sb.length() - 1).toString());
                     return;
                 }

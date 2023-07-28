@@ -1,12 +1,9 @@
 import ru.yandex.model.*;
-import ru.yandex.service.FileBackedTaskManager;
+import ru.yandex.server.KVServer;
 import ru.yandex.service.interfaces.TaskManager;
 import ru.yandex.util.Managers;
 
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -14,8 +11,7 @@ import java.util.*;
 public class Main {
 
     private static final Random random = new Random();
-    private static final String PATH = "src/main/java/ru/yandex/resources/tasks.csv";
-    private static TaskManager manager = Managers.getFileBackedManager(PATH);
+    private static final String URL = "http://localhost:8078";
     private static final LocalDateTime START_TIME_1
             = LocalDateTime.of(2023, 7, 17, 10, 0);
     private static final LocalDateTime START_TIME_2
@@ -23,14 +19,15 @@ public class Main {
     private static final LocalDateTime START_TIME_3
             = LocalDateTime.of(2023, 7, 17, 13, 0);
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException, InterruptedException {
+        new KVServer().start();
+        TaskManager manager = Managers.getDefault(URL);
         Task task1 = new Task(START_TIME_1, 20)
                 .setId(random.nextInt())
                 .setName("Task")
                 .setStatus(Status.NEW)
                 .setDescription("Task description");
         manager.addTask(task1);
-
         Epic epic1 = (Epic) new Epic(START_TIME_2, 30)
                 .setId(random.nextInt())
                 .setName("Epic")
@@ -47,17 +44,9 @@ public class Main {
         manager.getEpic(epic1.getId());
         manager.getTask(task1.getId());
         manager.addSubtask(epic1subtask1);
-
-        System.out.println("Содержимое файла tasks.csv после работы main() в Main:");
-        try {
-            System.out.println(Files.readString(Paths.get(PATH)));
-        } catch (IOException e) {
-            System.out.println(e.getMessage());
-        }
-        manager = FileBackedTaskManager.loadFromFile(new File(PATH));
-        List<Task> priority = manager.getPrioritizedTasks();
-        for (Task task : priority) {
-            System.out.println(task);
-        }
+        System.out.println(manager.getPrioritizedTasks());
+        System.out.println(manager.getAllTasks());
+        System.out.println(manager.getAllEpics());
+        System.out.println(manager.getAllSubtasks());
     }
 }

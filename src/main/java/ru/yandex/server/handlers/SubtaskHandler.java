@@ -93,20 +93,19 @@ public class SubtaskHandler implements HttpHandler {
             ServerUtil.writeResponse(exchange, "Получен некорректный JSON", 400);
             return;
         }
+        if (subtask == null) {
+            ServerUtil.writeResponse(exchange, "Subtask пуст", 400);
+            return;
+        }
+        if (manager.getEpic(subtask.getEpicId()) == null) {
+            ServerUtil.writeResponse(exchange,
+                    "Epic не существует для данного Subtask", 400);
+            return;
+        }
         if (manager.getSubtask(subtask.getId()) == null) {
-            if (manager.getEpic(subtask.getEpicId()) == null) {
-                ServerUtil.writeResponse(exchange,
-                        "Epic не существует для данного Subtask", 400);
-                return;
-            }
             manager.addSubtask(subtask);
             ServerUtil.writeResponse(exchange, "Subtask успешно добавлена", 200);
         } else {
-            if (manager.getEpic(subtask.getEpicId()) == null) {
-                ServerUtil.writeResponse(exchange,
-                        "Epic не существует для данного Subtask", 400);
-                return;
-            }
             manager.updateSubtask(subtask);
             ServerUtil.writeResponse(exchange, "Subtask успешно обновлена", 200);
         }
@@ -118,13 +117,11 @@ public class SubtaskHandler implements HttpHandler {
             ServerUtil.writeResponse(exchange, "Неверное id для Subtask", 400);
             return;
         }
-        int sizeBeforeDelete = manager.getAllSubtasks().size();
-        manager.deleteSubtask(id);
-        int sizeAfterDelete = manager.getAllSubtasks().size();
-        if (sizeAfterDelete == sizeBeforeDelete) {
+        if (manager.getSubtask(id) == null) {
             ServerUtil.writeResponse(exchange, "Subtask с таким id не существует", 400);
             return;
         }
+        manager.deleteSubtask(id);
         ServerUtil.writeResponse(exchange, "Subtask с id=" + id + " успешно удалена", 200);
     }
 

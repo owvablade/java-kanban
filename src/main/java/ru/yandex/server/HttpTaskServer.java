@@ -21,14 +21,14 @@ import java.util.List;
 public class HttpTaskServer {
 
     private static final int PORT = 8080;
-    private static final String PATH = "src/main/java/ru/yandex/resources/tasks.csv";
+    private static final String URL = "http://localhost:8078";
     private final Gson gson;
     private final HttpServer server;
     private final TaskManager manager;
 
-    public HttpTaskServer() throws IOException {
+    public HttpTaskServer() throws IOException, InterruptedException {
         gson = new GsonBuilder().create();
-        manager = Managers.getFileBackedManager(PATH);
+        manager = Managers.getDefault(URL);
         server = HttpServer.create(new InetSocketAddress(PORT), 0);
         server.createContext("/tasks", this::handlePrioritizedTasks);
         server.createContext("/tasks/task", new TaskHandler(manager, gson));
