@@ -3,8 +3,6 @@ package ru.yandex.util;
 import ru.yandex.service.FileBackedTaskManager;
 import ru.yandex.service.HttpTaskManager;
 import ru.yandex.service.InMemoryHistoryManager;
-import ru.yandex.service.interfaces.HistoryManager;
-import ru.yandex.service.interfaces.TaskManager;
 import ru.yandex.service.InMemoryTaskManager;
 
 import java.io.File;
