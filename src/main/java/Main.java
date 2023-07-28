@@ -34,12 +34,11 @@ public class Main {
                 .setStatus(Status.NEW)
                 .setDescription("Epic description");
         manager.addEpic(epic1);
-        Subtask epic1subtask1 = (Subtask) new Subtask(START_TIME_3, 40)
+        Subtask epic1subtask1 = (Subtask) new Subtask(START_TIME_3, 180)
                 .setId(random.nextInt())
                 .setName("Subtask")
                 .setStatus(Status.NEW)
-                .setDescription("Subtask description")
-                .setDuration(Duration.ofMinutes(20));
+                .setDescription("Subtask description");
         epic1subtask1.setEpicId(epic1.getId());
         manager.getEpic(epic1.getId());
         manager.getTask(task1.getId());

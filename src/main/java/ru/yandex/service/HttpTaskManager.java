@@ -2,6 +2,8 @@ package ru.yandex.service;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import ru.yandex.adapter.DurationAdapter;
+import ru.yandex.adapter.LocalDateAdapter;
 import ru.yandex.client.KVTaskClient;
 import ru.yandex.client.interfaces.TaskClient;
 import ru.yandex.model.Epic;
@@ -9,6 +11,8 @@ import ru.yandex.model.Subtask;
 import ru.yandex.model.Task;
 
 import java.io.IOException;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -20,7 +24,10 @@ public class HttpTaskManager extends FileBackedTaskManager {
     public HttpTaskManager(String url) throws IOException, InterruptedException {
         super(url);
         client = new KVTaskClient(url);
-        gson = new GsonBuilder().create();
+        gson = new GsonBuilder()
+                .registerTypeAdapter(LocalDateTime.class, new LocalDateAdapter().nullSafe())
+                .registerTypeAdapter(Duration.class, new DurationAdapter().nullSafe())
+                .create();
     }
 
     public static HttpTaskManager loadFromServer(String url) throws IOException, InterruptedException {

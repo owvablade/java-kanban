@@ -4,7 +4,8 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpServer;
-import ru.yandex.model.Status;
+import ru.yandex.adapter.DurationAdapter;
+import ru.yandex.adapter.LocalDateAdapter;
 import ru.yandex.model.*;
 import ru.yandex.server.handlers.EpicHandler;
 import ru.yandex.server.handlers.SubtaskHandler;
@@ -15,6 +16,7 @@ import ru.yandex.util.Managers;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -27,7 +29,10 @@ public class HttpTaskServer {
     private final TaskManager manager;
 
     public HttpTaskServer() throws IOException, InterruptedException {
-        gson = new GsonBuilder().create();
+        gson = new GsonBuilder()
+                .registerTypeAdapter(LocalDateTime.class, new LocalDateAdapter().nullSafe())
+                .registerTypeAdapter(Duration.class, new DurationAdapter().nullSafe())
+                .create();
         manager = Managers.getDefault(URL);
         server = HttpServer.create(new InetSocketAddress(PORT), 0);
         server.createContext("/tasks", this::handlePrioritizedTasks);
@@ -63,34 +68,5 @@ public class HttpTaskServer {
             responseCode = 400;
         }
         ServerUtil.writeResponse(exchange, response, responseCode);
-    }
-
-    public void start() {
-        final LocalDateTime START_TIME_1
-                = LocalDateTime.of(2023, 7, 17, 10, 0);
-        final LocalDateTime START_TIME_2
-                = LocalDateTime.of(2023, 7, 17, 12, 0);
-        final LocalDateTime START_TIME_3
-                = LocalDateTime.of(2023, 7, 17, 13, 0);
-        Task task1 = new Task(START_TIME_1, 20)
-                .setId(0)
-                .setName("Task")
-                .setStatus(Status.NEW)
-                .setDescription("Task description");
-        manager.addTask(task1);
-        Epic epic1 = (Epic) new Epic(START_TIME_2, 30)
-                .setId(-123)
-                .setName("Epic")
-                .setStatus(Status.NEW)
-                .setDescription("Epic description");
-        manager.addEpic(epic1);
-        Subtask epic1subtask1 = (Subtask) new Subtask(START_TIME_3, 40)
-                .setId(-123)
-                .setName("Subtask")
-                .setStatus(Status.NEW)
-                .setDescription("Subtask description");
-        epic1subtask1.setEpicId(epic1.getId());
-        manager.addSubtask(epic1subtask1);
-        server.start();
     }
 }
