@@ -47,7 +47,7 @@ public class EpicHandler implements HttpHandler {
                 deleteAllEpics(exchange);
                 break;
             default:
-                ServerUtil.writeResponse(exchange, "Неизвестный запрос", 400);
+                ServerUtil.writeResponse(exchange, "Неизвестный запрос", 404);
                 break;
         }
     }
@@ -119,7 +119,7 @@ public class EpicHandler implements HttpHandler {
             ServerUtil.writeResponse(exchange, "Epic успешно обновлена", 200);
         } else {
             manager.addEpic(epic);
-            ServerUtil.writeResponse(exchange, "Epic успешно добавлена / обновлена", 200);
+            ServerUtil.writeResponse(exchange, "Epic успешно добавлена", 201);
         }
     }
 

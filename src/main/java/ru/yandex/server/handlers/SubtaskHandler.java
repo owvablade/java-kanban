@@ -45,7 +45,7 @@ public class SubtaskHandler implements HttpHandler {
                 deleteAllSubtasks(exchange);
                 break;
             default:
-                ServerUtil.writeResponse(exchange, "Неизвестный запрос", 400);
+                ServerUtil.writeResponse(exchange, "Неизвестный запрос", 404);
                 break;
         }
     }
@@ -108,7 +108,7 @@ public class SubtaskHandler implements HttpHandler {
             ServerUtil.writeResponse(exchange, "Subtask успешно обновлена", 200);
         } else {
             manager.addSubtask(subtask);
-            ServerUtil.writeResponse(exchange, "Subtask успешно добавлена", 200);
+            ServerUtil.writeResponse(exchange, "Subtask успешно добавлена", 201);
         }
     }
 

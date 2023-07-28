@@ -45,7 +45,7 @@ public class TaskHandler implements HttpHandler {
                 deleteAllTasks(exchange);
                 break;
             default:
-                ServerUtil.writeResponse(exchange, "Неизвестный запрос", 400);
+                ServerUtil.writeResponse(exchange, "Неизвестный запрос", 404);
                 break;
         }
     }
@@ -103,7 +103,7 @@ public class TaskHandler implements HttpHandler {
             ServerUtil.writeResponse(exchange, "Task успешно обновлена", 200);
         } else {
             manager.addTask(task);
-            ServerUtil.writeResponse(exchange, "Task успешно добавлена / обновлена", 200);
+            ServerUtil.writeResponse(exchange, "Task успешно добавлена", 201);
         }
     }
 

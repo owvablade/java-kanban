@@ -85,7 +85,7 @@ class HttpTaskServerTest {
         URI uri = URI.create(API_URL + "/tasks/task/");
         String json = GSON.toJson(task);
         HttpResponse<String> postResponse = makePostRequest(uri, json);
-        assertEquals(200, postResponse.statusCode());
+        assertEquals(201, postResponse.statusCode());
 
         HttpResponse<String> getResponse = makeGetRequest(uri);
         String expectedJsonTaskArray = GSON.toJson(List.of(task));
@@ -110,7 +110,7 @@ class HttpTaskServerTest {
         URI uri = URI.create(API_URL + "/tasks/task/");
         String json = GSON.toJson(task);
         HttpResponse<String> postResponse = makePostRequest(uri, json);
-        assertEquals(200, postResponse.statusCode());
+        assertEquals(201, postResponse.statusCode());
 
         uri = URI.create(API_URL + "/tasks/task/?id=0");
         HttpResponse<String> getResponse = makeGetRequest(uri);
@@ -125,7 +125,7 @@ class HttpTaskServerTest {
         URI uri = URI.create(API_URL + "/tasks/task/");
         String json = GSON.toJson(task);
         HttpResponse<String> postResponse = makePostRequest(uri, json);
-        assertEquals(200, postResponse.statusCode());
+        assertEquals(201, postResponse.statusCode());
 
         uri = URI.create(API_URL + "/tasks/task/?id=" + Integer.MAX_VALUE);
         HttpResponse<String> getResponse = makeGetRequest(uri);
@@ -137,7 +137,7 @@ class HttpTaskServerTest {
         URI uri = URI.create(API_URL + "/tasks/task/");
         String json = GSON.toJson(task);
         HttpResponse<String> postResponse = makePostRequest(uri, json);
-        assertEquals(200, postResponse.statusCode());
+        assertEquals(201, postResponse.statusCode());
 
         uri = URI.create(API_URL + "/tasks/task/?id=");
         HttpResponse<String> getResponse = makeGetRequest(uri);
@@ -153,7 +153,7 @@ class HttpTaskServerTest {
         URI uri = URI.create(API_URL + "/tasks/task/");
         String json = GSON.toJson(task);
         HttpResponse<String> postResponse = makePostRequest(uri, json);
-        assertEquals(200, postResponse.statusCode());
+        assertEquals(201, postResponse.statusCode());
     }
 
     @Test
@@ -161,7 +161,7 @@ class HttpTaskServerTest {
         URI uri = URI.create(API_URL + "/tasks/task/");
         String json = GSON.toJson(task);
         HttpResponse<String> postResponseForAdd = makePostRequest(uri, json);
-        assertEquals(200, postResponseForAdd.statusCode());
+        assertEquals(201, postResponseForAdd.statusCode());
 
         task = task.setName("New task").setStatus(Status.DONE);
         json = GSON.toJson(task);
@@ -182,7 +182,7 @@ class HttpTaskServerTest {
         URI uri = URI.create(API_URL + "/tasks/task/");
         String json = GSON.toJson(task);
         HttpResponse<String> postResponse = makePostRequest(uri, json);
-        assertEquals(200, postResponse.statusCode());
+        assertEquals(201, postResponse.statusCode());
 
         uri = URI.create(API_URL + "/tasks/task/?id=0");
         HttpResponse<String> deleteResponse = makeDeleteRequest(uri);
@@ -198,12 +198,12 @@ class HttpTaskServerTest {
         URI uri = URI.create(API_URL + "/tasks/task/");
         String json = GSON.toJson(task);
         HttpResponse<String> postResponse = makePostRequest(uri, json);
-        assertEquals(200, postResponse.statusCode());
+        assertEquals(201, postResponse.statusCode());
 
         task.setId(1);
         json = GSON.toJson(task);
         postResponse = makePostRequest(uri, json);
-        assertEquals(200, postResponse.statusCode());
+        assertEquals(201, postResponse.statusCode());
 
         uri = URI.create(API_URL + "/tasks/task/");
         HttpResponse<String> deleteResponse = makeDeleteRequest(uri);
@@ -223,7 +223,7 @@ class HttpTaskServerTest {
         URI uri = URI.create(API_URL + "/tasks/epic/");
         String json = GSON.toJson(epic);
         HttpResponse<String> postResponse = makePostRequest(uri, json);
-        assertEquals(200, postResponse.statusCode());
+        assertEquals(201, postResponse.statusCode());
 
         HttpResponse<String> getResponse = makeGetRequest(uri);
         String expectedJsonEpicArray = GSON.toJson(List.of(epic));
@@ -249,7 +249,7 @@ class HttpTaskServerTest {
         URI uri = URI.create(API_URL + "/tasks/epic/");
         String json = GSON.toJson(epic);
         HttpResponse<String> postResponse = makePostRequest(uri, json);
-        assertEquals(200, postResponse.statusCode());
+        assertEquals(201, postResponse.statusCode());
 
         uri = URI.create(API_URL + "/tasks/epic/?id=0");
         HttpResponse<String> getResponse = makeGetRequest(uri);
@@ -264,7 +264,7 @@ class HttpTaskServerTest {
         URI uri = URI.create(API_URL + "/tasks/epic/");
         String json = GSON.toJson(epic);
         HttpResponse<String> postResponse = makePostRequest(uri, json);
-        assertEquals(200, postResponse.statusCode());
+        assertEquals(201, postResponse.statusCode());
 
         uri = URI.create(API_URL + "/tasks/epic/?id=" + Integer.MAX_VALUE);
         HttpResponse<String> getResponse = makeGetRequest(uri);
@@ -276,7 +276,7 @@ class HttpTaskServerTest {
         URI uri = URI.create(API_URL + "/tasks/epic/");
         String json = GSON.toJson(epic);
         HttpResponse<String> postResponse = makePostRequest(uri, json);
-        assertEquals(200, postResponse.statusCode());
+        assertEquals(201, postResponse.statusCode());
 
         uri = URI.create(API_URL + "/tasks/epic/?id=");
         HttpResponse<String> getResponse = makeGetRequest(uri);
@@ -292,7 +292,7 @@ class HttpTaskServerTest {
         URI uri = URI.create(API_URL + "/tasks/epic/");
         String json = GSON.toJson(epic);
         HttpResponse<String> postResponse = makePostRequest(uri, json);
-        assertEquals(200, postResponse.statusCode());
+        assertEquals(201, postResponse.statusCode());
     }
 
     @Test
@@ -301,7 +301,7 @@ class HttpTaskServerTest {
         URI uri = URI.create(API_URL + "/tasks/epic/");
         String json = GSON.toJson(epic);
         HttpResponse<String> postResponseForAdd = makePostRequest(uri, json);
-        assertEquals(200, postResponseForAdd.statusCode());
+        assertEquals(201, postResponseForAdd.statusCode());
 
         epic = (Epic) epic.setName("New epic");
         json = GSON.toJson(epic);
@@ -323,7 +323,7 @@ class HttpTaskServerTest {
         URI uri = URI.create(API_URL + "/tasks/epic/");
         String json = GSON.toJson(epic);
         HttpResponse<String> postResponse = makePostRequest(uri, json);
-        assertEquals(200, postResponse.statusCode());
+        assertEquals(201, postResponse.statusCode());
 
         uri = URI.create(API_URL + "/tasks/epic/?id=0");
         HttpResponse<String> deleteResponse = makeDeleteRequest(uri);
@@ -339,12 +339,12 @@ class HttpTaskServerTest {
         URI uri = URI.create(API_URL + "/tasks/epic/");
         String json = GSON.toJson(epic);
         HttpResponse<String> postResponse = makePostRequest(uri, json);
-        assertEquals(200, postResponse.statusCode());
+        assertEquals(201, postResponse.statusCode());
 
         epic.setId(1);
         json = GSON.toJson(epic);
         postResponse = makePostRequest(uri, json);
-        assertEquals(200, postResponse.statusCode());
+        assertEquals(201, postResponse.statusCode());
 
         uri = URI.create(API_URL + "/tasks/epic/");
         HttpResponse<String> deleteResponse = makeDeleteRequest(uri);
@@ -365,12 +365,12 @@ class HttpTaskServerTest {
         URI uri = URI.create(API_URL + "/tasks/epic/");
         String json = GSON.toJson(epic);
         HttpResponse<String> postResponse = makePostRequest(uri, json);
-        assertEquals(200, postResponse.statusCode());
+        assertEquals(201, postResponse.statusCode());
 
         uri = URI.create(API_URL + "/tasks/subtask/");
         json = GSON.toJson(subtask);
         HttpResponse<String> postResponseForSubtask = makePostRequest(uri, json);
-        assertEquals(200, postResponseForSubtask.statusCode());
+        assertEquals(201, postResponseForSubtask.statusCode());
 
         HttpResponse<String> getResponse = makeGetRequest(uri);
         String expectedJsonSubtaskArray = GSON.toJson(List.of(subtask));
@@ -397,12 +397,12 @@ class HttpTaskServerTest {
         URI uri = URI.create(API_URL + "/tasks/epic/");
         String json = GSON.toJson(epic);
         HttpResponse<String> postResponse = makePostRequest(uri, json);
-        assertEquals(200, postResponse.statusCode());
+        assertEquals(201, postResponse.statusCode());
 
         uri = URI.create(API_URL + "/tasks/subtask/");
         json = GSON.toJson(subtask);
         HttpResponse<String> postResponseForSubtask = makePostRequest(uri, json);
-        assertEquals(200, postResponseForSubtask.statusCode());
+        assertEquals(201, postResponseForSubtask.statusCode());
 
         uri = URI.create(API_URL + "/tasks/subtask/?id=1");
         HttpResponse<String> getResponse = makeGetRequest(uri);
@@ -420,12 +420,12 @@ class HttpTaskServerTest {
         URI uri = URI.create(API_URL + "/tasks/epic/");
         String json = GSON.toJson(epic);
         HttpResponse<String> postResponse = makePostRequest(uri, json);
-        assertEquals(200, postResponse.statusCode());
+        assertEquals(201, postResponse.statusCode());
 
         uri = URI.create(API_URL + "/tasks/subtask/");
         json = GSON.toJson(subtask);
         HttpResponse<String> postResponseForSubtask = makePostRequest(uri, json);
-        assertEquals(200, postResponseForSubtask.statusCode());
+        assertEquals(201, postResponseForSubtask.statusCode());
 
         uri = URI.create(API_URL + "/tasks/subtask/?id=" + Integer.MAX_VALUE);
         HttpResponse<String> getResponse = makeGetRequest(uri);
@@ -439,12 +439,12 @@ class HttpTaskServerTest {
         URI uri = URI.create(API_URL + "/tasks/epic/");
         String json = GSON.toJson(epic);
         HttpResponse<String> postResponse = makePostRequest(uri, json);
-        assertEquals(200, postResponse.statusCode());
+        assertEquals(201, postResponse.statusCode());
 
         uri = URI.create(API_URL + "/tasks/subtask/");
         json = GSON.toJson(subtask);
         HttpResponse<String> postResponseForSubtask = makePostRequest(uri, json);
-        assertEquals(200, postResponseForSubtask.statusCode());
+        assertEquals(201, postResponseForSubtask.statusCode());
 
         uri = URI.create(API_URL + "/tasks/subtask/?id==asd");
         HttpResponse<String> getResponse = makeGetRequest(uri);
@@ -458,12 +458,12 @@ class HttpTaskServerTest {
         URI uri = URI.create(API_URL + "/tasks/epic/");
         String json = GSON.toJson(epic);
         HttpResponse<String> postResponse = makePostRequest(uri, json);
-        assertEquals(200, postResponse.statusCode());
+        assertEquals(201, postResponse.statusCode());
 
         uri = URI.create(API_URL + "/tasks/subtask/");
         json = GSON.toJson(subtask);
         HttpResponse<String> postResponseForSubtask = makePostRequest(uri, json);
-        assertEquals(200, postResponseForSubtask.statusCode());
+        assertEquals(201, postResponseForSubtask.statusCode());
     }
 
     @Test
@@ -473,12 +473,12 @@ class HttpTaskServerTest {
         URI uri = URI.create(API_URL + "/tasks/epic/");
         String json = GSON.toJson(epic);
         HttpResponse<String> postResponse = makePostRequest(uri, json);
-        assertEquals(200, postResponse.statusCode());
+        assertEquals(201, postResponse.statusCode());
 
         uri = URI.create(API_URL + "/tasks/subtask/");
         json = GSON.toJson(subtask);
         HttpResponse<String> postResponseForSubtask = makePostRequest(uri, json);
-        assertEquals(200, postResponseForSubtask.statusCode());
+        assertEquals(201, postResponseForSubtask.statusCode());
 
         subtask = (Subtask) subtask.setName("New subtask");
         json = GSON.toJson(subtask);
@@ -501,12 +501,12 @@ class HttpTaskServerTest {
         URI uri = URI.create(API_URL + "/tasks/epic/");
         String json = GSON.toJson(epic);
         HttpResponse<String> postResponse = makePostRequest(uri, json);
-        assertEquals(200, postResponse.statusCode());
+        assertEquals(201, postResponse.statusCode());
 
         uri = URI.create(API_URL + "/tasks/subtask/");
         json = GSON.toJson(subtask);
         HttpResponse<String> postResponseForSubtask = makePostRequest(uri, json);
-        assertEquals(200, postResponseForSubtask.statusCode());
+        assertEquals(201, postResponseForSubtask.statusCode());
 
         uri = URI.create(API_URL + "/tasks/subtask/?id=1");
         HttpResponse<String> deleteResponse = makeDeleteRequest(uri);
@@ -524,17 +524,17 @@ class HttpTaskServerTest {
         URI uri = URI.create(API_URL + "/tasks/epic/");
         String json = GSON.toJson(epic);
         HttpResponse<String> postResponseForEpic = makePostRequest(uri, json);
-        assertEquals(200, postResponseForEpic.statusCode());
+        assertEquals(201, postResponseForEpic.statusCode());
 
         uri = URI.create(API_URL + "/tasks/subtask/");
         json = GSON.toJson(subtask);
         HttpResponse<String> postResponseForFirstSubtask = makePostRequest(uri, json);
-        assertEquals(200, postResponseForFirstSubtask.statusCode());
+        assertEquals(201, postResponseForFirstSubtask.statusCode());
 
         subtask.setId(2);
         json = GSON.toJson(subtask);
         HttpResponse<String> postResponseForSecondSubtask = makePostRequest(uri, json);
-        assertEquals(200, postResponseForSecondSubtask.statusCode());
+        assertEquals(201, postResponseForSecondSubtask.statusCode());
 
         uri = URI.create(API_URL + "/tasks/subtask/");
         HttpResponse<String> deleteResponse = makeDeleteRequest(uri);
@@ -555,17 +555,17 @@ class HttpTaskServerTest {
         URI uri = URI.create(API_URL + "/tasks/epic/");
         String json = GSON.toJson(epic);
         HttpResponse<String> postResponseForEpic = makePostRequest(uri, json);
-        assertEquals(200, postResponseForEpic.statusCode());
+        assertEquals(201, postResponseForEpic.statusCode());
 
         uri = URI.create(API_URL + "/tasks/subtask/");
         json = GSON.toJson(subtask);
         HttpResponse<String> postResponseForFirstSubtask = makePostRequest(uri, json);
-        assertEquals(200, postResponseForFirstSubtask.statusCode());
+        assertEquals(201, postResponseForFirstSubtask.statusCode());
 
         subtask.setId(2);
         json = GSON.toJson(subtask);
         HttpResponse<String> postResponseForSecondSubtask = makePostRequest(uri, json);
-        assertEquals(200, postResponseForSecondSubtask.statusCode());
+        assertEquals(201, postResponseForSecondSubtask.statusCode());
 
         uri = URI.create(API_URL + "/tasks/epic/?id=0");
         HttpResponse<String> getResponseForEpic = makeGetRequest(uri);
@@ -595,17 +595,17 @@ class HttpTaskServerTest {
         URI uri = URI.create(API_URL + "/tasks/epic/");
         String json = GSON.toJson(epic);
         HttpResponse<String> postResponseForEpic = makePostRequest(uri, json);
-        assertEquals(200, postResponseForEpic.statusCode());
+        assertEquals(201, postResponseForEpic.statusCode());
 
         uri = URI.create(API_URL + "/tasks/task/");
         json = GSON.toJson(task);
         HttpResponse<String> postResponseForTask = makePostRequest(uri, json);
-        assertEquals(200, postResponseForTask.statusCode());
+        assertEquals(201, postResponseForTask.statusCode());
 
         uri = URI.create(API_URL + "/tasks/subtask/");
         json = GSON.toJson(subtask);
         HttpResponse<String> postResponseForSubtask = makePostRequest(uri, json);
-        assertEquals(200, postResponseForSubtask.statusCode());
+        assertEquals(201, postResponseForSubtask.statusCode());
 
         uri = URI.create(API_URL + "/tasks/epic/?id=0");
         HttpResponse<String> getResponseForEpic = makeGetRequest(uri);
@@ -635,17 +635,17 @@ class HttpTaskServerTest {
         URI uri = URI.create(API_URL + "/tasks/task/");
         String json = GSON.toJson(task);
         HttpResponse<String> postResponseForTask = makePostRequest(uri, json);
-        assertEquals(200, postResponseForTask.statusCode());
+        assertEquals(201, postResponseForTask.statusCode());
 
         uri = URI.create(API_URL + "/tasks/epic/");
         json = GSON.toJson(epic);
         HttpResponse<String> postResponseForEpic = makePostRequest(uri, json);
-        assertEquals(200, postResponseForEpic.statusCode());
+        assertEquals(201, postResponseForEpic.statusCode());
 
         uri = URI.create(API_URL + "/tasks/subtask/");
         json = GSON.toJson(subtask);
         HttpResponse<String> postResponseForSubtask = makePostRequest(uri, json);
-        assertEquals(200, postResponseForSubtask.statusCode());
+        assertEquals(201, postResponseForSubtask.statusCode());
 
         uri = URI.create(API_URL + "/tasks/");
         HttpResponse<String> getResponse = makeGetRequest(uri);
