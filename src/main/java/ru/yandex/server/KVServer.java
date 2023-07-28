@@ -155,6 +155,10 @@ public class KVServer {
         server.start();
     }
 
+    public void stop() {
+        server.stop(0);
+    }
+
     private String generateApiToken() {
         return "" + System.currentTimeMillis();
     }
