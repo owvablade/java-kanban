@@ -18,8 +18,8 @@ import java.util.stream.Collectors;
 
 public class HttpTaskManager extends FileBackedTaskManager {
 
-    private final Gson gson;
-    private final TaskClient client;
+    private Gson gson;
+    private TaskClient client;
 
     public HttpTaskManager(String url) throws IOException, InterruptedException {
         super(url);
@@ -161,6 +161,7 @@ public class HttpTaskManager extends FileBackedTaskManager {
 
     @Override
     public void addTask(Task task) {
+        if (task == null) return;
         task.setId(id);
         taskStorage.add(task);
         priorityStorage.add(task);
@@ -170,6 +171,7 @@ public class HttpTaskManager extends FileBackedTaskManager {
 
     @Override
     public void addEpic(Epic epic) {
+        if (epic == null) return;
         epic.setId(id);
         epicStorage.add(epic);
         StatusChecker.checkEpicStatus(epic);
@@ -179,13 +181,15 @@ public class HttpTaskManager extends FileBackedTaskManager {
 
     @Override
     public void addSubtask(Subtask subtask) {
+        if (subtask == null) return;
         Epic epicOfSubtask = epicStorage.get(subtask.getEpicId());
+        if (epicOfSubtask == null) return;
         subtask.setId(id);
+        save(subtask);
         subtaskStorage.add(subtask);
         epicOfSubtask.addSubtask(subtask);
         StatusChecker.checkEpicStatus(epicOfSubtask);
         priorityStorage.add(subtask);
-        save(subtask);
         id++;
     }
 
@@ -226,6 +230,7 @@ public class HttpTaskManager extends FileBackedTaskManager {
 
     @Override
     public void updateEpic(Epic epic) {
+        if (epic == null) return;
         for (Subtask subtask : epic.getSubtasks()) {
             updateSubtask(subtask);
         }
@@ -236,17 +241,20 @@ public class HttpTaskManager extends FileBackedTaskManager {
 
     @Override
     public void updateSubtask(Subtask subtask) {
+        if (subtask == null) return;
         Epic epicOfSubtask = epicStorage.get(subtask.getEpicId());
+        if (epicOfSubtask == null) return;
+        save(subtask);
         epicOfSubtask.changeSubtask(subtask);
         subtaskStorage.update(subtask);
         StatusChecker.checkEpicStatus(epicStorage.get(subtask.getEpicId()));
         priorityStorage.update(subtask);
-        save(subtask);
     }
 
     @Override
     public void deleteTask(int id) {
         Task task = taskStorage.get(id);
+        if (task == null) return;
         priorityStorage.remove(task);
         history.remove(id);
         taskStorage.delete(id);
@@ -257,6 +265,7 @@ public class HttpTaskManager extends FileBackedTaskManager {
     @Override
     public void deleteEpic(int id) {
         Epic epic = epicStorage.get(id);
+        if (epic == null) return;
         List<Subtask> subtasks = epic.getSubtasks();
         for (Subtask subtask : subtasks) {
             priorityStorage.remove(subtask);
@@ -272,6 +281,7 @@ public class HttpTaskManager extends FileBackedTaskManager {
     @Override
     public void deleteSubtask(int id) {
         Subtask subtask = subtaskStorage.get(id);
+        if (subtask == null) return;
         priorityStorage.remove(subtask);
         epicStorage.get(subtask.getEpicId()).deleteSubtask(subtask);
         history.remove(id);
