@@ -27,7 +27,7 @@ class HttpTaskManagerTest extends TaskManagerTest<HttpTaskManager> {
     }
 
     @AfterEach
-    void afterEach(){
+    void afterEach() {
         server.stop();
     }
 
