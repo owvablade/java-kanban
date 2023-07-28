@@ -23,17 +23,16 @@ import java.util.List;
 public class HttpTaskServer {
 
     private static final int PORT = 8080;
-    private static final String URL = "http://localhost:8078";
     private final Gson gson;
     private final HttpServer server;
     private final TaskManager manager;
 
-    public HttpTaskServer() throws IOException, InterruptedException {
+    public HttpTaskServer(String url) throws IOException, InterruptedException {
         gson = new GsonBuilder()
                 .registerTypeAdapter(LocalDateTime.class, new LocalDateAdapter().nullSafe())
                 .registerTypeAdapter(Duration.class, new DurationAdapter().nullSafe())
                 .create();
-        manager = Managers.getDefault(URL);
+        manager = Managers.getDefault(url);
         server = HttpServer.create(new InetSocketAddress(PORT), 0);
         server.createContext("/tasks", this::handlePrioritizedTasks);
         server.createContext("/tasks/task", new TaskHandler(manager, gson));
@@ -68,5 +67,13 @@ public class HttpTaskServer {
             responseCode = 400;
         }
         ServerUtil.writeResponse(exchange, response, responseCode);
+    }
+
+    public void start() {
+        server.start();
+    }
+
+    public void stop() {
+        server.stop(0);
     }
 }
