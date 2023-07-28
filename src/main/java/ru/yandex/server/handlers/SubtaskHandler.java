@@ -8,7 +8,7 @@ import ru.yandex.model.Subtask;
 import ru.yandex.server.handlers.model.Endpoint;
 import ru.yandex.server.handlers.util.HandlerUtil;
 import ru.yandex.server.handlers.util.ServerUtil;
-import ru.yandex.service.interfaces.TaskManager;
+import ru.yandex.service.HttpTaskManager;
 
 import java.io.IOException;
 import java.net.URI;
@@ -18,9 +18,9 @@ import java.util.List;
 public class SubtaskHandler implements HttpHandler {
 
     private final Gson gson;
-    private final TaskManager manager;
+    private final HttpTaskManager manager;
 
-    public SubtaskHandler(TaskManager manager, Gson gson) {
+    public SubtaskHandler(HttpTaskManager manager, Gson gson) {
         this.gson = gson;
         this.manager = manager;
     }
@@ -45,6 +45,7 @@ public class SubtaskHandler implements HttpHandler {
                 deleteAllSubtasks(exchange);
                 break;
             default:
+                ServerUtil.writeResponse(exchange, "Неизвестный запрос", 400);
                 break;
         }
     }
@@ -97,17 +98,17 @@ public class SubtaskHandler implements HttpHandler {
             ServerUtil.writeResponse(exchange, "Subtask пуст", 400);
             return;
         }
-        if (manager.getEpic(subtask.getEpicId()) == null) {
+        if (!manager.containsEpic(subtask.getEpicId())) {
             ServerUtil.writeResponse(exchange,
                     "Epic не существует для данного Subtask", 400);
             return;
         }
-        if (manager.getSubtask(subtask.getId()) == null) {
-            manager.addSubtask(subtask);
-            ServerUtil.writeResponse(exchange, "Subtask успешно добавлена", 200);
-        } else {
+        if (manager.containsSubtask(subtask.getId())) {
             manager.updateSubtask(subtask);
             ServerUtil.writeResponse(exchange, "Subtask успешно обновлена", 200);
+        } else {
+            manager.addSubtask(subtask);
+            ServerUtil.writeResponse(exchange, "Subtask успешно добавлена", 200);
         }
     }
 

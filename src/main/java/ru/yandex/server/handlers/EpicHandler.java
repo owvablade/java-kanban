@@ -5,10 +5,11 @@ import com.google.gson.JsonSyntaxException;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import ru.yandex.model.Epic;
+import ru.yandex.model.Subtask;
 import ru.yandex.server.handlers.model.Endpoint;
 import ru.yandex.server.handlers.util.HandlerUtil;
 import ru.yandex.server.handlers.util.ServerUtil;
-import ru.yandex.service.interfaces.TaskManager;
+import ru.yandex.service.HttpTaskManager;
 
 import java.io.IOException;
 import java.net.URI;
@@ -18,9 +19,9 @@ import java.util.List;
 public class EpicHandler implements HttpHandler {
 
     private final Gson gson;
-    private final TaskManager manager;
+    private final HttpTaskManager manager;
 
-    public EpicHandler(TaskManager manager, Gson gson) {
+    public EpicHandler(HttpTaskManager manager, Gson gson) {
         this.gson = gson;
         this.manager = manager;
     }
@@ -46,6 +47,7 @@ public class EpicHandler implements HttpHandler {
                 deleteAllEpics(exchange);
                 break;
             default:
+                ServerUtil.writeResponse(exchange, "Неизвестный запрос", 400);
                 break;
         }
     }
@@ -80,15 +82,20 @@ public class EpicHandler implements HttpHandler {
             ServerUtil.writeResponse(exchange, "Неверное id для Epic", 400);
             return;
         }
-        Epic epic = manager.getEpic(id);
-        if (epic == null) {
-            ServerUtil.writeResponse(exchange, "Epic с таким id не существует", 400);
-            return;
-        }
         String response;
         if (endpoint == Endpoint.GET_ALL_EPIC_SUBTASKS) {
-            response = gson.toJson(epic.getSubtasks());
+            List<Subtask> subtasks = manager.getAllEpicSubtasks(id);
+            if (subtasks.isEmpty()) {
+                ServerUtil.writeResponse(exchange, "Список пуст", 400);
+                return;
+            }
+            response = gson.toJson(manager.getAllEpicSubtasks(id));
         } else {
+            Epic epic = manager.getEpic(id);
+            if (epic == null) {
+                ServerUtil.writeResponse(exchange, "Epic с таким id не существует", 400);
+                return;
+            }
             response = gson.toJson(epic);
         }
         ServerUtil.writeResponse(exchange, response, 200);
@@ -107,12 +114,12 @@ public class EpicHandler implements HttpHandler {
             ServerUtil.writeResponse(exchange, "Epic пуст", 400);
             return;
         }
-        if (manager.getEpic(epic.getId()) == null) {
-            manager.addEpic(epic);
-            ServerUtil.writeResponse(exchange, "Epic успешно добавлена", 200);
-        } else {
+        if (manager.containsEpic(epic.getId())) {
             manager.updateEpic(epic);
             ServerUtil.writeResponse(exchange, "Epic успешно обновлена", 200);
+        } else {
+            manager.addEpic(epic);
+            ServerUtil.writeResponse(exchange, "Epic успешно добавлена / обновлена", 200);
         }
     }
 

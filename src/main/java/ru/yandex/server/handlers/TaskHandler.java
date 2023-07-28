@@ -8,7 +8,7 @@ import ru.yandex.model.Task;
 import ru.yandex.server.handlers.model.Endpoint;
 import ru.yandex.server.handlers.util.HandlerUtil;
 import ru.yandex.server.handlers.util.ServerUtil;
-import ru.yandex.service.interfaces.TaskManager;
+import ru.yandex.service.HttpTaskManager;
 
 import java.io.IOException;
 import java.net.URI;
@@ -18,9 +18,9 @@ import java.util.List;
 public class TaskHandler implements HttpHandler {
 
     private final Gson gson;
-    private final TaskManager manager;
+    private final HttpTaskManager manager;
 
-    public TaskHandler(TaskManager manager, Gson gson) {
+    public TaskHandler(HttpTaskManager manager, Gson gson) {
         this.gson = gson;
         this.manager = manager;
     }
@@ -45,6 +45,7 @@ public class TaskHandler implements HttpHandler {
                 deleteAllTasks(exchange);
                 break;
             default:
+                ServerUtil.writeResponse(exchange, "Неизвестный запрос", 400);
                 break;
         }
     }
@@ -97,12 +98,12 @@ public class TaskHandler implements HttpHandler {
             ServerUtil.writeResponse(exchange, "Task пуст", 400);
             return;
         }
-        if (manager.getTask(task.getId()) == null) {
-            manager.addTask(task);
-            ServerUtil.writeResponse(exchange, "Task успешно добавлена", 200);
-        } else {
+        if (manager.containsTask(task.getId())) {
             manager.updateTask(task);
             ServerUtil.writeResponse(exchange, "Task успешно обновлена", 200);
+        } else {
+            manager.addTask(task);
+            ServerUtil.writeResponse(exchange, "Task успешно добавлена / обновлена", 200);
         }
     }
 

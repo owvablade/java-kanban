@@ -27,16 +27,13 @@ public class KVServer {
 
     private void load(HttpExchange h) throws IOException {
         try {
-            System.out.println("\n/load");
             if (!hasAuth(h)) {
-                System.out.println("Запрос неавторизован, нужен параметр в query API_TOKEN со значением апи-ключа");
                 h.sendResponseHeaders(403, 0);
                 return;
             }
             if ("GET".equals(h.getRequestMethod())) {
                 String key = h.getRequestURI().getPath().substring("/load/".length());
                 if (key.isEmpty()) {
-                    System.out.println("Key для сохранения пустой. key указывается в пути: /load/{key}");
                     h.sendResponseHeaders(400, 0);
                     return;
                 }
@@ -46,7 +43,6 @@ public class KVServer {
                         sb.append(currentKey).append(",");
                     }
                     if (sb.length() == 0) {
-                        System.out.println("Сервер пуст");
                         h.sendResponseHeaders(400, 0);
                         return;
                     }
@@ -55,13 +51,11 @@ public class KVServer {
                 }
                 String value = data.get(key);
                 if (value == null) {
-                    System.out.println("Значение по ключу не найдено");
                     h.sendResponseHeaders(204, 0);
                     return;
                 }
                 sendText(h, value);
             } else {
-                System.out.println("/load ждёт GET-запрос, а получил: " + h.getRequestMethod());
                 h.sendResponseHeaders(405, 0);
             }
         } finally {
@@ -71,30 +65,24 @@ public class KVServer {
 
     private void save(HttpExchange h) throws IOException {
         try {
-            System.out.println("\n/save");
             if (!hasAuth(h)) {
-                System.out.println("Запрос неавторизован, нужен параметр в query API_TOKEN со значением апи-ключа");
                 h.sendResponseHeaders(403, 0);
                 return;
             }
             if ("POST".equals(h.getRequestMethod())) {
                 String key = h.getRequestURI().getPath().substring("/save/".length());
                 if (key.isEmpty()) {
-                    System.out.println("Key для сохранения пустой. key указывается в пути: /save/{key}");
                     h.sendResponseHeaders(400, 0);
                     return;
                 }
                 String value = readText(h);
                 if (value.isEmpty()) {
-                    System.out.println("Value для сохранения пустой. value указывается в теле запроса");
                     h.sendResponseHeaders(400, 0);
                     return;
                 }
                 data.put(key, value);
-                System.out.println("Значение для ключа " + key + " успешно обновлено!");
                 h.sendResponseHeaders(200, 0);
             } else {
-                System.out.println("/save ждёт POST-запрос, а получил: " + h.getRequestMethod());
                 h.sendResponseHeaders(405, 0);
             }
         } finally {
@@ -104,29 +92,23 @@ public class KVServer {
 
     private void delete(HttpExchange h) throws IOException {
         try {
-            System.out.println("\n/delete");
             if (!hasAuth(h)) {
-                System.out.println("Запрос неавторизован, нужен параметр в query API_TOKEN со значением апи-ключа");
                 h.sendResponseHeaders(403, 0);
                 return;
             }
             if ("DELETE".equals(h.getRequestMethod())) {
                 String key = h.getRequestURI().getPath().substring("/delete/".length());
                 if (key.isEmpty()) {
-                    System.out.println("Key для сохранения пустой. key указывается в пути: /delete/{key}");
                     h.sendResponseHeaders(400, 0);
                     return;
                 }
                 String removeValue = data.remove(key);
                 if (removeValue == null) {
-                    System.out.println("Значение по ключу " + key + " не найдено");
                     h.sendResponseHeaders(400, 0);
                     return;
                 }
-                System.out.println("Значение для ключа " + key + " успешно удалено!");
                 h.sendResponseHeaders(200, 0);
             } else {
-                System.out.println("/delete ждёт DELETE-запрос, а получил: " + h.getRequestMethod());
                 h.sendResponseHeaders(405, 0);
             }
         } finally {
@@ -136,11 +118,9 @@ public class KVServer {
 
     private void register(HttpExchange h) throws IOException {
         try {
-            System.out.println("\n/register");
             if ("GET".equals(h.getRequestMethod())) {
                 sendText(h, apiToken);
             } else {
-                System.out.println("/register ждёт GET-запрос, а получил " + h.getRequestMethod());
                 h.sendResponseHeaders(405, 0);
             }
         } finally {
@@ -149,9 +129,6 @@ public class KVServer {
     }
 
     public void start() {
-        System.out.println("Запускаем сервер на порту " + PORT);
-        System.out.println("Открой в браузере http://localhost:" + PORT + "/");
-        System.out.println("API_TOKEN: " + apiToken);
         server.start();
     }
 

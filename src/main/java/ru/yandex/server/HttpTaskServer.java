@@ -11,7 +11,7 @@ import ru.yandex.server.handlers.EpicHandler;
 import ru.yandex.server.handlers.SubtaskHandler;
 import ru.yandex.server.handlers.TaskHandler;
 import ru.yandex.server.handlers.util.ServerUtil;
-import ru.yandex.service.interfaces.TaskManager;
+import ru.yandex.service.HttpTaskManager;
 import ru.yandex.util.Managers;
 
 import java.io.IOException;
@@ -25,7 +25,7 @@ public class HttpTaskServer {
     private static final int PORT = 8080;
     private final Gson gson;
     private final HttpServer server;
-    private final TaskManager manager;
+    private final HttpTaskManager manager;
 
     public HttpTaskServer(String url) throws IOException, InterruptedException {
         gson = new GsonBuilder()
