@@ -1,10 +1,10 @@
 import ru.yandex.model.*;
+import ru.yandex.server.HttpTaskServer;
 import ru.yandex.server.KVServer;
 import ru.yandex.service.interfaces.TaskManager;
 import ru.yandex.util.Managers;
 
 import java.io.IOException;
-import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -21,6 +21,7 @@ public class Main {
 
     public static void main(String[] args) throws IOException, InterruptedException {
         new KVServer().start();
+        new HttpTaskServer(URL).start();
         TaskManager manager = Managers.getDefault(URL);
         Task task1 = new Task(START_TIME_1, 20)
                 .setId(random.nextInt())
@@ -43,9 +44,5 @@ public class Main {
         manager.getEpic(epic1.getId());
         manager.getTask(task1.getId());
         manager.addSubtask(epic1subtask1);
-        System.out.println(manager.getPrioritizedTasks());
-        System.out.println(manager.getAllTasks());
-        System.out.println(manager.getAllEpics());
-        System.out.println(manager.getAllSubtasks());
     }
 }
