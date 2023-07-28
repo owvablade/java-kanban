@@ -12,19 +12,19 @@ import java.io.IOException;
 
 public class Managers {
 
-    public static TaskManager getDefault(String url) throws IOException, InterruptedException {
+    public static HttpTaskManager getDefault(String url) throws IOException, InterruptedException {
         return HttpTaskManager.loadFromServer(url);
     }
 
-    public static TaskManager getInMemoryManager() {
+    public static InMemoryTaskManager getInMemoryManager() {
         return new InMemoryTaskManager();
     }
 
-    public static TaskManager getFileBackedManager(String path) {
+    public static FileBackedTaskManager getFileBackedManager(String path) {
         return FileBackedTaskManager.loadFromFile(new File(path));
     }
 
-    public static HistoryManager getDefaultHistory() {
+    public static InMemoryHistoryManager getDefaultHistory() {
         return new InMemoryHistoryManager();
     }
 }

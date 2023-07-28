@@ -7,6 +7,7 @@ import ru.yandex.model.Epic;
 import ru.yandex.model.Status;
 import ru.yandex.model.Subtask;
 import ru.yandex.model.Task;
+import ru.yandex.util.Managers;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -25,7 +26,7 @@ class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTaskManager> {
 
     @BeforeEach
     void beforeEach() {
-        manager = new FileBackedTaskManager(PATH);
+        manager = Managers.getFileBackedManager(PATH);
     }
 
     @AfterEach
