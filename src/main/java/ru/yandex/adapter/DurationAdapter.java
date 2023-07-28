@@ -16,6 +16,6 @@ public class DurationAdapter extends TypeAdapter<Duration> {
 
     @Override
     public Duration read(JsonReader jsonReader) throws IOException {
-        return Duration.parse(String.format("PT%sS", jsonReader.nextString()));
+        return Duration.parse(jsonReader.nextString());
     }
 }
