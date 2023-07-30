@@ -16,10 +16,9 @@ public class ServerUtil {
                                      String responseString,
                                      int responseCode) throws IOException {
         byte[] response = responseString.getBytes(StandardCharsets.UTF_8);
-        exchange.sendResponseHeaders(responseCode, response.length);
         try (OutputStream os = exchange.getResponseBody()) {
+            exchange.sendResponseHeaders(responseCode, response.length);
             os.write(response);
         }
-        exchange.close();
     }
 }
