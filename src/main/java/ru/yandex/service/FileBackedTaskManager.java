@@ -66,7 +66,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         return manager;
     }
 
-    private void save() {
+    protected void save() {
         List<Task> tasks = getAllTasks();
         tasks.addAll(getAllEpics());
         tasks.addAll(getAllSubtasks());

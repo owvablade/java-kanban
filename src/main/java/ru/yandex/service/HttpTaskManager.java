@@ -111,39 +111,29 @@ public class HttpTaskManager extends FileBackedTaskManager {
         }
     }
 
-    private void save(Task task) {
-        String currentId;
-        if (task instanceof Epic) {
-            currentId = "Epic";
-        } else if (task instanceof Subtask) {
-            currentId = "Subtask";
-        } else {
-            currentId = "Task";
+    @Override
+    protected void save() {
+        List<Task> tasks = getAllTasks();
+        tasks.addAll(getAllEpics());
+        tasks.addAll(getAllSubtasks());
+        for (Task task : tasks) {
+            String currentId;
+            if (task instanceof Epic) {
+                currentId = "Epic";
+            } else if (task instanceof Subtask) {
+                currentId = "Subtask";
+            } else {
+                currentId = "Task";
+            }
+            currentId += task.getId();
+            String jsonTask = gson.toJson(task);
+            try {
+                client.put(currentId, jsonTask);
+            } catch (IOException | InterruptedException e) {
+                e.printStackTrace();
+            }
         }
-        currentId += id;
-        String jsonTasks = gson.toJson(task);
-        try {
-            client.put(currentId, jsonTasks);
-        } catch (IOException | InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void delete(Task task) {
-        String currentId;
-        if (task instanceof Epic) {
-            currentId = "Epic";
-        } else if (task instanceof Subtask) {
-            currentId = "Subtask";
-        } else {
-            currentId = "Task";
-        }
-        currentId += task.getId();
-        try {
-            client.delete(currentId);
-        } catch (IOException | InterruptedException e) {
-            e.printStackTrace();
-        }
+        saveHistory();
     }
 
     private void saveHistory() {
@@ -169,170 +159,5 @@ public class HttpTaskManager extends FileBackedTaskManager {
 
     public boolean containsSubtask(int id) {
         return subtaskStorage.get(id) != null;
-    }
-
-    @Override
-    public void addTask(Task task) {
-        if (task == null) return;
-        task.setId(id);
-        taskStorage.add(task);
-        priorityStorage.add(task);
-        save(task);
-        id++;
-    }
-
-    @Override
-    public void addEpic(Epic epic) {
-        if (epic == null) return;
-        epic.setId(id);
-        epicStorage.add(epic);
-        StatusChecker.checkEpicStatus(epic);
-        save(epic);
-        id++;
-    }
-
-    @Override
-    public void addSubtask(Subtask subtask) {
-        if (subtask == null) return;
-        Epic epicOfSubtask = epicStorage.get(subtask.getEpicId());
-        if (epicOfSubtask == null) return;
-        subtask.setId(id);
-        save(subtask);
-        subtaskStorage.add(subtask);
-        epicOfSubtask.addSubtask(subtask);
-        StatusChecker.checkEpicStatus(epicOfSubtask);
-        priorityStorage.add(subtask);
-        id++;
-    }
-
-    @Override
-    public Task getTask(int id) {
-        Task task = super.getTask(id);
-        if (task != null) {
-            saveHistory();
-        }
-        return task;
-    }
-
-    @Override
-    public Epic getEpic(int id) {
-        Epic epic = super.getEpic(id);
-        if (epic != null) {
-            saveHistory();
-        }
-        return epic;
-    }
-
-    @Override
-    public Subtask getSubtask(int id) {
-        Subtask subtask = super.getSubtask(id);
-        if (subtask != null) {
-            saveHistory();
-        }
-        return subtask;
-    }
-
-    @Override
-    public void updateTask(Task task) {
-        if (task == null) return;
-        priorityStorage.update(task);
-        taskStorage.update(task);
-        save(task);
-    }
-
-    @Override
-    public void updateEpic(Epic epic) {
-        if (epic == null) return;
-        for (Subtask subtask : epic.getSubtasks()) {
-            updateSubtask(subtask);
-        }
-        epicStorage.update(epic);
-        StatusChecker.checkEpicStatus(epic);
-        save(epic);
-    }
-
-    @Override
-    public void updateSubtask(Subtask subtask) {
-        if (subtask == null) return;
-        Epic epicOfSubtask = epicStorage.get(subtask.getEpicId());
-        if (epicOfSubtask == null) return;
-        save(subtask);
-        epicOfSubtask.changeSubtask(subtask);
-        subtaskStorage.update(subtask);
-        StatusChecker.checkEpicStatus(epicStorage.get(subtask.getEpicId()));
-        priorityStorage.update(subtask);
-    }
-
-    @Override
-    public void deleteTask(int id) {
-        Task task = taskStorage.get(id);
-        if (task == null) return;
-        priorityStorage.remove(task);
-        history.remove(id);
-        taskStorage.delete(id);
-        delete(task);
-        saveHistory();
-    }
-
-    @Override
-    public void deleteEpic(int id) {
-        Epic epic = epicStorage.get(id);
-        if (epic == null) return;
-        List<Subtask> subtasks = epic.getSubtasks();
-        for (Subtask subtask : subtasks) {
-            priorityStorage.remove(subtask);
-            history.remove(subtask.getId());
-            subtaskStorage.delete(subtask.getId());
-            delete(subtask);
-        }
-        history.remove(id);
-        epicStorage.delete(id);
-        saveHistory();
-    }
-
-    @Override
-    public void deleteSubtask(int id) {
-        Subtask subtask = subtaskStorage.get(id);
-        if (subtask == null) return;
-        priorityStorage.remove(subtask);
-        epicStorage.get(subtask.getEpicId()).deleteSubtask(subtask);
-        history.remove(id);
-        subtaskStorage.delete(id);
-        delete(subtask);
-        StatusChecker.checkEpicStatus(epicStorage.get(subtask.getEpicId()));
-    }
-
-    @Override
-    public void deleteAllTasks() {
-        for (Task task : taskStorage.getAll()) {
-            priorityStorage.remove(task);
-            history.remove(task.getId());
-            delete(task);
-        }
-        taskStorage.deleteAll();
-        saveHistory();
-    }
-
-    @Override
-    public void deleteAllEpics() {
-        this.deleteAllSubtasks();
-        for (Epic epic : epicStorage.getAll()) {
-            history.remove(epic.getId());
-            delete(epic);
-        }
-        epicStorage.deleteAll();
-        saveHistory();
-    }
-
-    @Override
-    public void deleteAllSubtasks() {
-        for (Subtask subtask : subtaskStorage.getAll()) {
-            epicStorage.get(subtask.getEpicId()).deleteSubtask(subtask);
-            priorityStorage.remove(subtask);
-            history.remove(subtask.getId());
-            delete(subtask);
-        }
-        subtaskStorage.deleteAll();
-        saveHistory();
     }
 }

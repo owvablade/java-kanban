@@ -36,12 +36,12 @@ class HttpTaskManagerTest extends TaskManagerTest<HttpTaskManager> {
         List<Task> expectedListOfTasks = List.of(task);
         List<Epic> expectedListOfEpics = List.of(epic);
         List<Subtask> expectedListOfSubtasks = List.of(subtask);
-        List<Task> expectedHistory = List.of(task, epic, subtask);
+        List<Task> expectedHistory = List.of(task, epic);
         manager.addTask(task);
         manager.addEpic(epic);
-        manager.addSubtask(subtask);
         manager.getTask(task.getId());
         manager.getEpic(epic.getId());
+        manager.addSubtask(subtask);
         manager.getSubtask(subtask.getId());
         manager = HttpTaskManager.loadFromServer(URL);
         assertAll(
