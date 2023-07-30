@@ -9,7 +9,6 @@ import ru.yandex.model.Subtask;
 import ru.yandex.model.Task;
 import ru.yandex.util.Managers;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -97,7 +96,7 @@ class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTaskManager> {
         PrintWriter writer = new PrintWriter(PATH);
         writer.write(fileContent);
         writer.close();
-        manager = FileBackedTaskManager.loadFromFile(new File(PATH));
+        manager = FileBackedTaskManager.load(PATH);
         final List<Integer> expectedHistory = List.of(1, 0);
         final List<Integer> actualHistory = manager.getHistory()
                 .stream()
@@ -133,7 +132,7 @@ class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTaskManager> {
         PrintWriter writer = new PrintWriter(PATH);
         writer.write(fileContent);
         writer.close();
-        manager = FileBackedTaskManager.loadFromFile(new File(PATH));
+        manager = FileBackedTaskManager.load(PATH);
         final List<Integer> expectedHistory = List.of();
         final List<Integer> actualHistory = manager.getHistory()
                 .stream()
@@ -167,7 +166,7 @@ class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTaskManager> {
         PrintWriter writer = new PrintWriter(PATH);
         writer.write(fileContent);
         writer.close();
-        manager = FileBackedTaskManager.loadFromFile(new File(PATH));
+        manager = FileBackedTaskManager.load(PATH);
         assertAll(
                 () -> assertEquals(expectedSize, manager.getAllTasks().size()),
                 () -> assertEquals(expectedSize, manager.getAllEpics().size()),
@@ -183,7 +182,7 @@ class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTaskManager> {
         PrintWriter writer = new PrintWriter(PATH);
         writer.write(fileContent);
         writer.close();
-        manager = FileBackedTaskManager.loadFromFile(new File(PATH));
+        manager = FileBackedTaskManager.load(PATH);
         final List<Integer> expectedHistory = List.of();
         final List<Integer> actualHistory = manager.getHistory()
                 .stream()

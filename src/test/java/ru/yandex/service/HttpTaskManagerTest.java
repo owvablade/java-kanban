@@ -20,7 +20,7 @@ class HttpTaskManagerTest extends TaskManagerTest<HttpTaskManager> {
     private static KVServer server;
 
     @BeforeEach
-    void beforeEach() throws IOException, InterruptedException {
+    void beforeEach() throws IOException {
         server = new KVServer();
         server.start();
         manager = Managers.getDefault(URL);
@@ -32,7 +32,7 @@ class HttpTaskManagerTest extends TaskManagerTest<HttpTaskManager> {
     }
 
     @Test
-    void shouldLoadTasksWithHistoryFromServer() throws IOException, InterruptedException {
+    void shouldLoadTasksWithHistoryFromServer() {
         List<Task> expectedListOfTasks = List.of(task);
         List<Epic> expectedListOfEpics = List.of(epic);
         List<Subtask> expectedListOfSubtasks = List.of(subtask);
@@ -43,7 +43,7 @@ class HttpTaskManagerTest extends TaskManagerTest<HttpTaskManager> {
         manager.getEpic(epic.getId());
         manager.addSubtask(subtask);
         manager.getSubtask(subtask.getId());
-        manager = HttpTaskManager.loadFromServer(URL);
+        manager = HttpTaskManager.load(URL);
         assertAll(
                 () -> assertEquals(expectedListOfTasks, manager.getAllTasks()),
                 () -> assertEquals(expectedListOfEpics, manager.getAllEpics()),
@@ -53,7 +53,7 @@ class HttpTaskManagerTest extends TaskManagerTest<HttpTaskManager> {
     }
 
     @Test
-    void shouldLoadTasksWithoutHistoryFromServer() throws IOException, InterruptedException {
+    void shouldLoadTasksWithoutHistoryFromServer() {
         List<Task> expectedListOfTasks = List.of(task);
         List<Epic> expectedListOfEpics = List.of(epic);
         List<Subtask> expectedListOfSubtasks = List.of(subtask);
@@ -61,7 +61,7 @@ class HttpTaskManagerTest extends TaskManagerTest<HttpTaskManager> {
         manager.addTask(task);
         manager.addEpic(epic);
         manager.addSubtask(subtask);
-        manager = HttpTaskManager.loadFromServer(URL);
+        manager = HttpTaskManager.load(URL);
         assertAll(
                 () -> assertEquals(expectedListOfTasks, manager.getAllTasks()),
                 () -> assertEquals(expectedListOfEpics, manager.getAllEpics()),
@@ -71,12 +71,12 @@ class HttpTaskManagerTest extends TaskManagerTest<HttpTaskManager> {
     }
 
     @Test
-    void shouldLoadEmptyServer() throws IOException, InterruptedException {
+    void shouldLoadEmptyServer() {
         List<Task> expectedListOfTasks = List.of();
         List<Epic> expectedListOfEpics = List.of();
         List<Subtask> expectedListOfSubtasks = List.of();
         List<Task> expectedHistory = List.of();
-        manager = HttpTaskManager.loadFromServer(URL);
+        manager = HttpTaskManager.load(URL);
         assertAll(
                 () -> assertEquals(expectedListOfTasks, manager.getAllTasks()),
                 () -> assertEquals(expectedListOfEpics, manager.getAllEpics()),

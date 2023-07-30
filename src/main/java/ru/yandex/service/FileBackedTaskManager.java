@@ -5,7 +5,6 @@ import ru.yandex.exceptions.ManagerSaveException;
 import ru.yandex.model.*;
 import ru.yandex.service.interfaces.HistoryManager;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -22,10 +21,10 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         this.path = path;
     }
 
-    public static FileBackedTaskManager loadFromFile(File file) {
-        FileBackedTaskManager manager = new FileBackedTaskManager(file.getPath());
+    public static FileBackedTaskManager load(String filePath) {
+        FileBackedTaskManager manager = new FileBackedTaskManager(filePath);
         try {
-            String csv = Files.readString(Paths.get(file.getPath()));
+            String csv = Files.readString(Paths.get(filePath));
             String[] csvEntries = csv.split("\n");
             if (csvEntries.length == 1) return manager;
             List<Task> tasks = manager.deserializeTasks(takeOnlyTasks(csvEntries));

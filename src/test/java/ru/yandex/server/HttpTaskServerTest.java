@@ -66,7 +66,7 @@ class HttpTaskServerTest {
     }
 
     @BeforeEach
-    void initializeAndStartServers() throws IOException, InterruptedException {
+    void initializeAndStartServers() throws IOException {
         kvServer = new KVServer();
         kvServer.start();
         httpTaskServer = new HttpTaskServer(KV_SERVER_URL);

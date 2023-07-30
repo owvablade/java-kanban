@@ -27,7 +27,7 @@ public class HttpTaskServer {
     private final HttpServer server;
     private final HttpTaskManager manager;
 
-    public HttpTaskServer(String url) throws IOException, InterruptedException {
+    public HttpTaskServer(String url) throws IOException {
         gson = new GsonBuilder()
                 .registerTypeAdapter(LocalDateTime.class, new LocalDateAdapter().nullSafe())
                 .registerTypeAdapter(Duration.class, new DurationAdapter().nullSafe())

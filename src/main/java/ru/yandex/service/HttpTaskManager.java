@@ -6,6 +6,9 @@ import ru.yandex.adapter.DurationAdapter;
 import ru.yandex.adapter.LocalDateAdapter;
 import ru.yandex.client.KVTaskClient;
 import ru.yandex.client.interfaces.TaskClient;
+import ru.yandex.exceptions.ManagerCreateException;
+import ru.yandex.exceptions.ManagerLoadException;
+import ru.yandex.exceptions.ManagerSaveException;
 import ru.yandex.model.Epic;
 import ru.yandex.model.Subtask;
 import ru.yandex.model.Task;
@@ -21,30 +24,38 @@ public class HttpTaskManager extends FileBackedTaskManager {
     private final Gson gson;
     private final TaskClient client;
 
-    public HttpTaskManager(String url) throws IOException, InterruptedException {
+    public HttpTaskManager(String url) {
         super(url);
-        client = new KVTaskClient(url);
+        try {
+            client = new KVTaskClient(url);
+        } catch (IOException | InterruptedException e) {
+            throw new ManagerCreateException(e.getMessage());
+        }
         gson = new GsonBuilder()
                 .registerTypeAdapter(LocalDateTime.class, new LocalDateAdapter().nullSafe())
                 .registerTypeAdapter(Duration.class, new DurationAdapter().nullSafe())
                 .create();
     }
 
-    public static HttpTaskManager loadFromServer(String url) throws IOException, InterruptedException {
+    public static HttpTaskManager load(String url) {
         HttpTaskManager manager = new HttpTaskManager(url);
-        String jsonIds = manager.client.load("ids");
-        if (jsonIds == null) {
+        try {
+            String jsonIds = manager.client.load("ids");
+            if (jsonIds == null) {
+                return manager;
+            }
+            List<String> ids = List.of(jsonIds.split(","));
+            loadAllTasks(manager, ids);
+            loadAllEpics(manager, ids);
+            loadAllSubtasks(manager, ids);
+            if (ids.contains("history")) {
+                loadHistory(manager);
+            }
+            manager.id++;
             return manager;
+        } catch (IOException | InterruptedException e) {
+            throw new ManagerLoadException(e.getMessage());
         }
-        List<String> ids = List.of(jsonIds.split(","));
-        loadAllTasks(manager, ids);
-        loadAllEpics(manager, ids);
-        loadAllSubtasks(manager, ids);
-        if (ids.contains("history")) {
-            loadHistory(manager);
-        }
-        manager.id++;
-        return manager;
     }
 
     private static void loadAllTasks(HttpTaskManager manager, List<String> ids)
@@ -130,7 +141,7 @@ public class HttpTaskManager extends FileBackedTaskManager {
             try {
                 client.put(currentId, jsonTask);
             } catch (IOException | InterruptedException e) {
-                e.printStackTrace();
+                throw new ManagerSaveException(e.getMessage());
             }
         }
         saveHistory();
@@ -145,7 +156,7 @@ public class HttpTaskManager extends FileBackedTaskManager {
         try {
             client.put("history", jsonHistory);
         } catch (IOException | InterruptedException e) {
-            e.printStackTrace();
+            throw new ManagerSaveException(e.getMessage());
         }
     }
 

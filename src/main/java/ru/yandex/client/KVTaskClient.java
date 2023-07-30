@@ -45,17 +45,6 @@ public class KVTaskClient implements TaskClient {
         return sendGetRequest(uri);
     }
 
-    @Override
-    public void delete(String key) throws IOException, InterruptedException {
-        String deleteUrl = url + String.format("/delete/%s?API_TOKEN=%s", key, apiToken);
-        URI uri = URI.create(deleteUrl);
-        HttpRequest request = HttpRequest.newBuilder()
-                .DELETE()
-                .uri(uri)
-                .build();
-        client.send(request, HttpResponse.BodyHandlers.ofString());
-    }
-
     private String sendGetRequest(URI uri) throws IOException, InterruptedException {
         HttpRequest request = HttpRequest.newBuilder()
                 .GET()

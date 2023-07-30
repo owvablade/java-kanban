@@ -19,7 +19,7 @@ public class Main {
     private static final LocalDateTime START_TIME_3
             = LocalDateTime.of(2023, 7, 17, 13, 0);
 
-    public static void main(String[] args) throws IOException, InterruptedException {
+    public static void main(String[] args) throws IOException {
         new KVServer().start();
         new HttpTaskServer(URL).start();
         TaskManager manager = Managers.getDefault(URL);
