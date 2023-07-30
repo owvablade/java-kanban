@@ -32,8 +32,11 @@ public class TaskHandler implements HttpHandler {
             case GET_TASK:
                 getTask(exchange);
                 break;
-            case ADD_UPDATE_TASK:
-                addOrUpdateTask(exchange);
+            case ADD_TASK:
+                addTask(exchange);
+                break;
+            case UPDATE_TASK:
+                updateTask(exchange);
                 break;
             case DELETE_TASK:
                 deleteTask(exchange);
@@ -52,6 +55,7 @@ public class TaskHandler implements HttpHandler {
 
     private Endpoint getTaskEndpoint(URI uri, String requestMethod) {
         String query = uri.getQuery();
+        String[] pathParts = uri.getPath().split("/");
         if ("GET".equals(requestMethod)) {
             if (query == null) {
                 return Endpoint.GET_ALL_TASKS;
@@ -59,7 +63,13 @@ public class TaskHandler implements HttpHandler {
                 return Endpoint.GET_TASK;
             }
         } else if ("POST".equals(requestMethod)) {
-            return Endpoint.ADD_UPDATE_TASK;
+            if (pathParts.length == 4 && "add".equals(pathParts[3])) {
+                return Endpoint.ADD_TASK;
+            } else if (pathParts.length == 4 && "update".equals(pathParts[3])) {
+                return Endpoint.UPDATE_TASK;
+            } else {
+                return Endpoint.UNKNOWN;
+            }
         } else if ("DELETE".equals(requestMethod)) {
             if (query == null) {
                 return Endpoint.DELETE_ALL_TASKS;
@@ -85,25 +95,27 @@ public class TaskHandler implements HttpHandler {
         ServerUtil.writeResponse(exchange, response, 200);
     }
 
-    private void addOrUpdateTask(HttpExchange exchange) throws IOException {
-        String jsonTask = new String(exchange.getRequestBody().readAllBytes(), StandardCharsets.UTF_8);
-        Task task;
-        try {
-            task = gson.fromJson(jsonTask, Task.class);
-        } catch (JsonSyntaxException e) {
+    private void addTask(HttpExchange exchange) throws IOException {
+        Task task = parseTaskJson(exchange);
+        if (task == null) {
             ServerUtil.writeResponse(exchange, "Получен некорректный JSON", 400);
             return;
         }
+        manager.addTask(task);
+        ServerUtil.writeResponse(exchange, "Task успешно добавлена", 201);
+    }
+
+    private void updateTask(HttpExchange exchange) throws IOException {
+        Task task = parseTaskJson(exchange);
         if (task == null) {
-            ServerUtil.writeResponse(exchange, "Task пуст", 400);
+            ServerUtil.writeResponse(exchange, "Получен некорректный JSON", 400);
             return;
         }
         if (manager.containsTask(task.getId())) {
             manager.updateTask(task);
             ServerUtil.writeResponse(exchange, "Task успешно обновлена", 200);
         } else {
-            manager.addTask(task);
-            ServerUtil.writeResponse(exchange, "Task успешно добавлена", 201);
+            ServerUtil.writeResponse(exchange, "Task c id= " + task.getId() + "не найден", 200);
         }
     }
 
@@ -130,5 +142,16 @@ public class TaskHandler implements HttpHandler {
     private void deleteAllTasks(HttpExchange exchange) throws IOException {
         manager.deleteAllTasks();
         ServerUtil.writeResponse(exchange, "Все Task успешно удалены", 200);
+    }
+
+    private Task parseTaskJson(HttpExchange exchange) throws IOException {
+        String jsonTask = new String(exchange.getRequestBody().readAllBytes(), StandardCharsets.UTF_8);
+        Task task;
+        try {
+            task = gson.fromJson(jsonTask, Task.class);
+        } catch (JsonSyntaxException e) {
+            return null;
+        }
+        return task;
     }
 }

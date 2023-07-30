@@ -1,12 +1,15 @@
 package ru.yandex.server.handlers.model;
 
 public enum Endpoint {
-    ADD_UPDATE_TASK,
-    ADD_UPDATE_EPIC,
-    ADD_UPDATE_SUBTASK,
+    ADD_TASK,
+    ADD_EPIC,
+    ADD_SUBTASK,
     GET_TASK,
     GET_EPIC,
     GET_SUBTASK,
+    UPDATE_TASK,
+    UPDATE_EPIC,
+    UPDATE_SUBTASK,
     DELETE_TASK,
     DELETE_EPIC,
     DELETE_SUBTASK,

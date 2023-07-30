@@ -34,8 +34,11 @@ public class EpicHandler implements HttpHandler {
             case GET_ALL_EPIC_SUBTASKS:
                 getEpic(exchange, endpoint);
                 break;
-            case ADD_UPDATE_EPIC:
-                addOrUpdateEpic(exchange);
+            case ADD_EPIC:
+                addEpic(exchange);
+                break;
+            case UPDATE_EPIC:
+                updateEpic(exchange);
                 break;
             case DELETE_EPIC:
                 deleteEpic(exchange);
@@ -65,7 +68,13 @@ public class EpicHandler implements HttpHandler {
                 return Endpoint.GET_EPIC;
             }
         } else if ("POST".equals(requestMethod)) {
-            return Endpoint.ADD_UPDATE_EPIC;
+            if (pathParts.length == 4 && "add".equals(pathParts[3])) {
+                return Endpoint.ADD_EPIC;
+            } else if (pathParts.length == 4 && "update".equals(pathParts[3])) {
+                return Endpoint.UPDATE_EPIC;
+            } else {
+                return Endpoint.UNKNOWN;
+            }
         } else if ("DELETE".equals(requestMethod)) {
             if (query == null) {
                 return Endpoint.DELETE_ALL_EPICS;
@@ -101,25 +110,27 @@ public class EpicHandler implements HttpHandler {
         ServerUtil.writeResponse(exchange, response, 200);
     }
 
-    private void addOrUpdateEpic(HttpExchange exchange) throws IOException {
-        String jsonTask = new String(exchange.getRequestBody().readAllBytes(), StandardCharsets.UTF_8);
-        Epic epic;
-        try {
-            epic = gson.fromJson(jsonTask, Epic.class);
-        } catch (JsonSyntaxException e) {
+    private void addEpic(HttpExchange exchange) throws IOException {
+        Epic epic = parseEpicJson(exchange);
+        if (epic == null) {
             ServerUtil.writeResponse(exchange, "Получен некорректный JSON", 400);
             return;
         }
+        manager.addEpic(epic);
+        ServerUtil.writeResponse(exchange, "Epic успешно добавлена", 201);
+    }
+
+    private void updateEpic(HttpExchange exchange) throws IOException {
+        Epic epic = parseEpicJson(exchange);
         if (epic == null) {
-            ServerUtil.writeResponse(exchange, "Epic пуст", 400);
+            ServerUtil.writeResponse(exchange, "Получен некорректный JSON", 400);
             return;
         }
         if (manager.containsEpic(epic.getId())) {
             manager.updateEpic(epic);
             ServerUtil.writeResponse(exchange, "Epic успешно обновлена", 200);
         } else {
-            manager.addEpic(epic);
-            ServerUtil.writeResponse(exchange, "Epic успешно добавлена", 201);
+            ServerUtil.writeResponse(exchange, "Epic c id= " + epic.getId() + "не найден", 200);
         }
     }
 
@@ -146,6 +157,17 @@ public class EpicHandler implements HttpHandler {
     private void deleteAllEpics(HttpExchange exchange) throws IOException {
         manager.deleteAllEpics();
         ServerUtil.writeResponse(exchange, "Все Epic успешно удалены", 200);
+    }
+
+    private Epic parseEpicJson(HttpExchange exchange) throws IOException {
+        String jsonTask = new String(exchange.getRequestBody().readAllBytes(), StandardCharsets.UTF_8);
+        Epic epic;
+        try {
+            epic = gson.fromJson(jsonTask, Epic.class);
+        } catch (JsonSyntaxException e) {
+            return null;
+        }
+        return epic;
     }
 }
 

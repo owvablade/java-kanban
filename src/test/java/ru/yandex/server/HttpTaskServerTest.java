@@ -82,7 +82,7 @@ class HttpTaskServerTest {
 
     @Test
     void shouldGetTasks() throws IOException, InterruptedException {
-        URI uri = URI.create(API_URL + "/tasks/task/");
+        URI uri = URI.create(API_URL + "/tasks/task/add");
         String json = GSON.toJson(task);
         HttpResponse<String> postResponse = makePostRequest(uri, json);
         assertEquals(201, postResponse.statusCode());
@@ -107,7 +107,7 @@ class HttpTaskServerTest {
 
     @Test
     void shouldGetTaskWithCorrectId() throws IOException, InterruptedException {
-        URI uri = URI.create(API_URL + "/tasks/task/");
+        URI uri = URI.create(API_URL + "/tasks/task/add");
         String json = GSON.toJson(task);
         HttpResponse<String> postResponse = makePostRequest(uri, json);
         assertEquals(201, postResponse.statusCode());
@@ -122,7 +122,7 @@ class HttpTaskServerTest {
 
     @Test
     void shouldNotGetTaskWithIncorrectId() throws IOException, InterruptedException {
-        URI uri = URI.create(API_URL + "/tasks/task/");
+        URI uri = URI.create(API_URL + "/tasks/task/add");
         String json = GSON.toJson(task);
         HttpResponse<String> postResponse = makePostRequest(uri, json);
         assertEquals(201, postResponse.statusCode());
@@ -134,7 +134,7 @@ class HttpTaskServerTest {
 
     @Test
     void shouldNotGetTaskWithIncorrectQuery() throws IOException, InterruptedException {
-        URI uri = URI.create(API_URL + "/tasks/task/");
+        URI uri = URI.create(API_URL + "/tasks/task/add");
         String json = GSON.toJson(task);
         HttpResponse<String> postResponse = makePostRequest(uri, json);
         assertEquals(201, postResponse.statusCode());
@@ -150,7 +150,7 @@ class HttpTaskServerTest {
 
     @Test
     void shouldAddTask() throws IOException, InterruptedException {
-        URI uri = URI.create(API_URL + "/tasks/task/");
+        URI uri = URI.create(API_URL + "/tasks/task/add");
         String json = GSON.toJson(task);
         HttpResponse<String> postResponse = makePostRequest(uri, json);
         assertEquals(201, postResponse.statusCode());
@@ -158,13 +158,14 @@ class HttpTaskServerTest {
 
     @Test
     void shouldUpdateTask() throws IOException, InterruptedException {
-        URI uri = URI.create(API_URL + "/tasks/task/");
+        URI uri = URI.create(API_URL + "/tasks/task/add");
         String json = GSON.toJson(task);
         HttpResponse<String> postResponseForAdd = makePostRequest(uri, json);
         assertEquals(201, postResponseForAdd.statusCode());
 
         task = task.setName("New task").setStatus(Status.DONE);
         json = GSON.toJson(task);
+        uri = URI.create(API_URL + "/tasks/task/update");
         HttpResponse<String> postResponseForUpdate = makePostRequest(uri, json);
         assertEquals(200, postResponseForUpdate.statusCode());
 
@@ -179,7 +180,7 @@ class HttpTaskServerTest {
 
     @Test
     void shouldDeleteTask() throws IOException, InterruptedException {
-        URI uri = URI.create(API_URL + "/tasks/task/");
+        URI uri = URI.create(API_URL + "/tasks/task/add");
         String json = GSON.toJson(task);
         HttpResponse<String> postResponse = makePostRequest(uri, json);
         assertEquals(201, postResponse.statusCode());
@@ -195,7 +196,7 @@ class HttpTaskServerTest {
 
     @Test
     void shouldDeleteAllTasks() throws IOException, InterruptedException {
-        URI uri = URI.create(API_URL + "/tasks/task/");
+        URI uri = URI.create(API_URL + "/tasks/task/add");
         String json = GSON.toJson(task);
         HttpResponse<String> postResponse = makePostRequest(uri, json);
         assertEquals(201, postResponse.statusCode());
@@ -220,7 +221,7 @@ class HttpTaskServerTest {
     @Test
     void shouldGetEpics() throws IOException, InterruptedException {
         epic.setId(0);
-        URI uri = URI.create(API_URL + "/tasks/epic/");
+        URI uri = URI.create(API_URL + "/tasks/epic/add");
         String json = GSON.toJson(epic);
         HttpResponse<String> postResponse = makePostRequest(uri, json);
         assertEquals(201, postResponse.statusCode());
@@ -246,7 +247,7 @@ class HttpTaskServerTest {
     @Test
     void shouldGetEpicWithCorrectId() throws IOException, InterruptedException {
         epic.setId(0);
-        URI uri = URI.create(API_URL + "/tasks/epic/");
+        URI uri = URI.create(API_URL + "/tasks/epic/add");
         String json = GSON.toJson(epic);
         HttpResponse<String> postResponse = makePostRequest(uri, json);
         assertEquals(201, postResponse.statusCode());
@@ -261,7 +262,7 @@ class HttpTaskServerTest {
 
     @Test
     void shouldNotGetEpicWithIncorrectId() throws IOException, InterruptedException {
-        URI uri = URI.create(API_URL + "/tasks/epic/");
+        URI uri = URI.create(API_URL + "/tasks/epic/add");
         String json = GSON.toJson(epic);
         HttpResponse<String> postResponse = makePostRequest(uri, json);
         assertEquals(201, postResponse.statusCode());
@@ -273,7 +274,7 @@ class HttpTaskServerTest {
 
     @Test
     void shouldNotGetEpicWithIncorrectQuery() throws IOException, InterruptedException {
-        URI uri = URI.create(API_URL + "/tasks/epic/");
+        URI uri = URI.create(API_URL + "/tasks/epic/add");
         String json = GSON.toJson(epic);
         HttpResponse<String> postResponse = makePostRequest(uri, json);
         assertEquals(201, postResponse.statusCode());
@@ -289,7 +290,7 @@ class HttpTaskServerTest {
 
     @Test
     void shouldAddEpic() throws IOException, InterruptedException {
-        URI uri = URI.create(API_URL + "/tasks/epic/");
+        URI uri = URI.create(API_URL + "/tasks/epic/add");
         String json = GSON.toJson(epic);
         HttpResponse<String> postResponse = makePostRequest(uri, json);
         assertEquals(201, postResponse.statusCode());
@@ -298,13 +299,14 @@ class HttpTaskServerTest {
     @Test
     void shouldUpdateEpic() throws IOException, InterruptedException {
         epic.setId(0);
-        URI uri = URI.create(API_URL + "/tasks/epic/");
+        URI uri = URI.create(API_URL + "/tasks/epic/add");
         String json = GSON.toJson(epic);
         HttpResponse<String> postResponseForAdd = makePostRequest(uri, json);
         assertEquals(201, postResponseForAdd.statusCode());
 
         epic = (Epic) epic.setName("New epic");
         json = GSON.toJson(epic);
+        uri = URI.create(API_URL + "/tasks/epic/update");
         HttpResponse<String> postResponseForUpdate = makePostRequest(uri, json);
         assertEquals(200, postResponseForUpdate.statusCode());
 
@@ -320,7 +322,7 @@ class HttpTaskServerTest {
     @Test
     void shouldDeleteEpic() throws IOException, InterruptedException {
         epic.setId(0);
-        URI uri = URI.create(API_URL + "/tasks/epic/");
+        URI uri = URI.create(API_URL + "/tasks/epic/add");
         String json = GSON.toJson(epic);
         HttpResponse<String> postResponse = makePostRequest(uri, json);
         assertEquals(201, postResponse.statusCode());
@@ -336,7 +338,7 @@ class HttpTaskServerTest {
 
     @Test
     void shouldDeleteAllEpics() throws IOException, InterruptedException {
-        URI uri = URI.create(API_URL + "/tasks/epic/");
+        URI uri = URI.create(API_URL + "/tasks/epic/add");
         String json = GSON.toJson(epic);
         HttpResponse<String> postResponse = makePostRequest(uri, json);
         assertEquals(201, postResponse.statusCode());
@@ -362,12 +364,12 @@ class HttpTaskServerTest {
     void shouldGetSubtasks() throws IOException, InterruptedException {
         epic.setId(0);
         subtask.setEpicId(0).setId(1);
-        URI uri = URI.create(API_URL + "/tasks/epic/");
+        URI uri = URI.create(API_URL + "/tasks/epic/add");
         String json = GSON.toJson(epic);
         HttpResponse<String> postResponse = makePostRequest(uri, json);
         assertEquals(201, postResponse.statusCode());
 
-        uri = URI.create(API_URL + "/tasks/subtask/");
+        uri = URI.create(API_URL + "/tasks/subtask/add");
         json = GSON.toJson(subtask);
         HttpResponse<String> postResponseForSubtask = makePostRequest(uri, json);
         assertEquals(201, postResponseForSubtask.statusCode());
@@ -394,12 +396,12 @@ class HttpTaskServerTest {
     void shouldGetSubtaskWithCorrectIdAndEpicId() throws IOException, InterruptedException {
         epic.setId(0);
         subtask.setEpicId(0).setId(1);
-        URI uri = URI.create(API_URL + "/tasks/epic/");
+        URI uri = URI.create(API_URL + "/tasks/epic/add");
         String json = GSON.toJson(epic);
         HttpResponse<String> postResponse = makePostRequest(uri, json);
         assertEquals(201, postResponse.statusCode());
 
-        uri = URI.create(API_URL + "/tasks/subtask/");
+        uri = URI.create(API_URL + "/tasks/subtask/add");
         json = GSON.toJson(subtask);
         HttpResponse<String> postResponseForSubtask = makePostRequest(uri, json);
         assertEquals(201, postResponseForSubtask.statusCode());
@@ -417,12 +419,12 @@ class HttpTaskServerTest {
     void shouldNotGetSubtaskWithIncorrectId() throws IOException, InterruptedException {
         epic.setId(0);
         subtask.setEpicId(0).setId(1);
-        URI uri = URI.create(API_URL + "/tasks/epic/");
+        URI uri = URI.create(API_URL + "/tasks/epic/add");
         String json = GSON.toJson(epic);
         HttpResponse<String> postResponse = makePostRequest(uri, json);
         assertEquals(201, postResponse.statusCode());
 
-        uri = URI.create(API_URL + "/tasks/subtask/");
+        uri = URI.create(API_URL + "/tasks/subtask/add");
         json = GSON.toJson(subtask);
         HttpResponse<String> postResponseForSubtask = makePostRequest(uri, json);
         assertEquals(201, postResponseForSubtask.statusCode());
@@ -436,12 +438,12 @@ class HttpTaskServerTest {
     void shouldNotGetSubtaskWithIncorrectQuery() throws IOException, InterruptedException {
         epic.setId(0);
         subtask.setEpicId(0).setId(1);
-        URI uri = URI.create(API_URL + "/tasks/epic/");
+        URI uri = URI.create(API_URL + "/tasks/epic/add");
         String json = GSON.toJson(epic);
         HttpResponse<String> postResponse = makePostRequest(uri, json);
         assertEquals(201, postResponse.statusCode());
 
-        uri = URI.create(API_URL + "/tasks/subtask/");
+        uri = URI.create(API_URL + "/tasks/subtask/add");
         json = GSON.toJson(subtask);
         HttpResponse<String> postResponseForSubtask = makePostRequest(uri, json);
         assertEquals(201, postResponseForSubtask.statusCode());
@@ -455,12 +457,12 @@ class HttpTaskServerTest {
     void shouldAddSubtask() throws IOException, InterruptedException {
         epic.setId(0);
         subtask.setEpicId(0).setId(1);
-        URI uri = URI.create(API_URL + "/tasks/epic/");
+        URI uri = URI.create(API_URL + "/tasks/epic/add");
         String json = GSON.toJson(epic);
         HttpResponse<String> postResponse = makePostRequest(uri, json);
         assertEquals(201, postResponse.statusCode());
 
-        uri = URI.create(API_URL + "/tasks/subtask/");
+        uri = URI.create(API_URL + "/tasks/subtask/add");
         json = GSON.toJson(subtask);
         HttpResponse<String> postResponseForSubtask = makePostRequest(uri, json);
         assertEquals(201, postResponseForSubtask.statusCode());
@@ -470,18 +472,19 @@ class HttpTaskServerTest {
     void shouldUpdateSubtask() throws IOException, InterruptedException {
         epic.setId(0);
         subtask.setEpicId(0).setId(1);
-        URI uri = URI.create(API_URL + "/tasks/epic/");
+        URI uri = URI.create(API_URL + "/tasks/epic/add");
         String json = GSON.toJson(epic);
         HttpResponse<String> postResponse = makePostRequest(uri, json);
         assertEquals(201, postResponse.statusCode());
 
-        uri = URI.create(API_URL + "/tasks/subtask/");
+        uri = URI.create(API_URL + "/tasks/subtask/add");
         json = GSON.toJson(subtask);
         HttpResponse<String> postResponseForSubtask = makePostRequest(uri, json);
         assertEquals(201, postResponseForSubtask.statusCode());
 
         subtask = (Subtask) subtask.setName("New subtask");
         json = GSON.toJson(subtask);
+        uri = URI.create(API_URL + "/tasks/subtask/update");
         HttpResponse<String> postResponseForUpdate = makePostRequest(uri, json);
         assertEquals(200, postResponseForUpdate.statusCode());
 
@@ -498,12 +501,12 @@ class HttpTaskServerTest {
     void shouldDeleteSubtask() throws IOException, InterruptedException {
         epic.setId(0);
         subtask.setEpicId(0).setId(1);
-        URI uri = URI.create(API_URL + "/tasks/epic/");
+        URI uri = URI.create(API_URL + "/tasks/epic/add");
         String json = GSON.toJson(epic);
         HttpResponse<String> postResponse = makePostRequest(uri, json);
         assertEquals(201, postResponse.statusCode());
 
-        uri = URI.create(API_URL + "/tasks/subtask/");
+        uri = URI.create(API_URL + "/tasks/subtask/add");
         json = GSON.toJson(subtask);
         HttpResponse<String> postResponseForSubtask = makePostRequest(uri, json);
         assertEquals(201, postResponseForSubtask.statusCode());
@@ -521,12 +524,12 @@ class HttpTaskServerTest {
     void shouldDeleteAllSubtasks() throws IOException, InterruptedException {
         epic.setId(0);
         subtask.setEpicId(0).setId(1);
-        URI uri = URI.create(API_URL + "/tasks/epic/");
+        URI uri = URI.create(API_URL + "/tasks/epic/add");
         String json = GSON.toJson(epic);
         HttpResponse<String> postResponseForEpic = makePostRequest(uri, json);
         assertEquals(201, postResponseForEpic.statusCode());
 
-        uri = URI.create(API_URL + "/tasks/subtask/");
+        uri = URI.create(API_URL + "/tasks/subtask/add");
         json = GSON.toJson(subtask);
         HttpResponse<String> postResponseForFirstSubtask = makePostRequest(uri, json);
         assertEquals(201, postResponseForFirstSubtask.statusCode());
@@ -552,12 +555,12 @@ class HttpTaskServerTest {
     void shouldGetEpicSubtasks() throws IOException, InterruptedException {
         epic.setId(0);
         subtask.setEpicId(0).setId(1);
-        URI uri = URI.create(API_URL + "/tasks/epic/");
+        URI uri = URI.create(API_URL + "/tasks/epic/add");
         String json = GSON.toJson(epic);
         HttpResponse<String> postResponseForEpic = makePostRequest(uri, json);
         assertEquals(201, postResponseForEpic.statusCode());
 
-        uri = URI.create(API_URL + "/tasks/subtask/");
+        uri = URI.create(API_URL + "/tasks/subtask/add");
         json = GSON.toJson(subtask);
         HttpResponse<String> postResponseForFirstSubtask = makePostRequest(uri, json);
         assertEquals(201, postResponseForFirstSubtask.statusCode());
@@ -592,17 +595,17 @@ class HttpTaskServerTest {
         epic.addSubtask(subtask);
         String expectedJsonHistory = GSON.toJson(List.of(epic, task, subtask));
 
-        URI uri = URI.create(API_URL + "/tasks/epic/");
+        URI uri = URI.create(API_URL + "/tasks/epic/add");
         String json = GSON.toJson(epic);
         HttpResponse<String> postResponseForEpic = makePostRequest(uri, json);
         assertEquals(201, postResponseForEpic.statusCode());
 
-        uri = URI.create(API_URL + "/tasks/task/");
+        uri = URI.create(API_URL + "/tasks/task/add");
         json = GSON.toJson(task);
         HttpResponse<String> postResponseForTask = makePostRequest(uri, json);
         assertEquals(201, postResponseForTask.statusCode());
 
-        uri = URI.create(API_URL + "/tasks/subtask/");
+        uri = URI.create(API_URL + "/tasks/subtask/add");
         json = GSON.toJson(subtask);
         HttpResponse<String> postResponseForSubtask = makePostRequest(uri, json);
         assertEquals(201, postResponseForSubtask.statusCode());
@@ -632,17 +635,17 @@ class HttpTaskServerTest {
     void shouldGetPrioritizedTasks() throws IOException, InterruptedException {
         String expectedJsonPrioritizedTasks = GSON.toJson(List.of(task, subtask));
 
-        URI uri = URI.create(API_URL + "/tasks/task/");
+        URI uri = URI.create(API_URL + "/tasks/task/add");
         String json = GSON.toJson(task);
         HttpResponse<String> postResponseForTask = makePostRequest(uri, json);
         assertEquals(201, postResponseForTask.statusCode());
 
-        uri = URI.create(API_URL + "/tasks/epic/");
+        uri = URI.create(API_URL + "/tasks/epic/add");
         json = GSON.toJson(epic);
         HttpResponse<String> postResponseForEpic = makePostRequest(uri, json);
         assertEquals(201, postResponseForEpic.statusCode());
 
-        uri = URI.create(API_URL + "/tasks/subtask/");
+        uri = URI.create(API_URL + "/tasks/subtask/add");
         json = GSON.toJson(subtask);
         HttpResponse<String> postResponseForSubtask = makePostRequest(uri, json);
         assertEquals(201, postResponseForSubtask.statusCode());

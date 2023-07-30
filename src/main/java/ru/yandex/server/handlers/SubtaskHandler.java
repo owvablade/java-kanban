@@ -32,8 +32,11 @@ public class SubtaskHandler implements HttpHandler {
             case GET_SUBTASK:
                 getSubtask(exchange);
                 break;
-            case ADD_UPDATE_SUBTASK:
-                addOrUpdateSubtask(exchange);
+            case ADD_SUBTASK:
+                addSubtask(exchange);
+                break;
+            case UPDATE_SUBTASK:
+                updateSubtask(exchange);
                 break;
             case DELETE_SUBTASK:
                 deleteSubtask(exchange);
@@ -52,6 +55,7 @@ public class SubtaskHandler implements HttpHandler {
 
     private Endpoint getSubtaskEndpoint(URI uri, String requestMethod) {
         String query = uri.getQuery();
+        String[] pathParts = uri.getPath().split("/");
         if ("GET".equals(requestMethod)) {
             if (query == null) {
                 return Endpoint.GET_ALL_SUBTASKS;
@@ -59,7 +63,13 @@ public class SubtaskHandler implements HttpHandler {
                 return Endpoint.GET_SUBTASK;
             }
         } else if ("POST".equals(requestMethod)) {
-            return Endpoint.ADD_UPDATE_SUBTASK;
+            if (pathParts.length == 4 && "add".equals(pathParts[3])) {
+                return Endpoint.ADD_SUBTASK;
+            } else if (pathParts.length == 4 && "update".equals(pathParts[3])) {
+                return Endpoint.UPDATE_SUBTASK;
+            } else {
+                return Endpoint.UNKNOWN;
+            }
         } else if ("DELETE".equals(requestMethod)) {
             if (query == null) {
                 return Endpoint.DELETE_ALL_SUBTASKS;
@@ -85,30 +95,23 @@ public class SubtaskHandler implements HttpHandler {
         ServerUtil.writeResponse(exchange, response, 200);
     }
 
-    private void addOrUpdateSubtask(HttpExchange exchange) throws IOException {
-        String jsonSubtask = new String(exchange.getRequestBody().readAllBytes(), StandardCharsets.UTF_8);
-        Subtask subtask;
-        try {
-            subtask = gson.fromJson(jsonSubtask, Subtask.class);
-        } catch (JsonSyntaxException e) {
-            ServerUtil.writeResponse(exchange, "Получен некорректный JSON", 400);
-            return;
-        }
-        if (subtask == null) {
-            ServerUtil.writeResponse(exchange, "Subtask пуст", 400);
-            return;
-        }
-        if (!manager.containsEpic(subtask.getEpicId())) {
-            ServerUtil.writeResponse(exchange,
-                    "Epic не существует для данного Subtask", 400);
-            return;
-        }
+    private void addSubtask(HttpExchange exchange) throws IOException {
+        Subtask subtask = getSubtaskAfterChecking(exchange);
+        if (subtask == null) return;
+        manager.addSubtask(subtask);
+        ServerUtil.writeResponse(exchange, "Subtask успешно добавлена", 201);
+    }
+
+    private void updateSubtask(HttpExchange exchange) throws IOException {
+        Subtask subtask = getSubtaskAfterChecking(exchange);
+        if (subtask == null) return;
         if (manager.containsSubtask(subtask.getId())) {
             manager.updateSubtask(subtask);
             ServerUtil.writeResponse(exchange, "Subtask успешно обновлена", 200);
         } else {
-            manager.addSubtask(subtask);
-            ServerUtil.writeResponse(exchange, "Subtask успешно добавлена", 201);
+            ServerUtil.writeResponse(exchange,
+                    "Subtask c id= " + subtask.getId() + "не найден",
+                    200);
         }
     }
 
@@ -135,5 +138,31 @@ public class SubtaskHandler implements HttpHandler {
     private void deleteAllSubtasks(HttpExchange exchange) throws IOException {
         manager.deleteAllSubtasks();
         ServerUtil.writeResponse(exchange, "Все Subtask успешно удалены", 200);
+    }
+
+    private Subtask parseSubtaskJson(HttpExchange exchange) throws IOException {
+        String jsonSubtask = new String(exchange.getRequestBody().readAllBytes(), StandardCharsets.UTF_8);
+        Subtask subtask;
+        try {
+            subtask = gson.fromJson(jsonSubtask, Subtask.class);
+        } catch (JsonSyntaxException e) {
+            return null;
+        }
+        return subtask;
+    }
+
+    private Subtask getSubtaskAfterChecking(HttpExchange exchange) throws IOException {
+        Subtask subtask = parseSubtaskJson(exchange);
+        if (subtask == null) {
+            ServerUtil.writeResponse(exchange, "Получен некорректный JSON", 400);
+            return null;
+        }
+        if (!manager.containsEpic(subtask.getEpicId())) {
+            ServerUtil.writeResponse(exchange,
+                    "Epic не существует для данного Subtask",
+                    400);
+            return null;
+        }
+        return subtask;
     }
 }
